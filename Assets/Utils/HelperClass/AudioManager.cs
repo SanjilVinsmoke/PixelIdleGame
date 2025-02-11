@@ -70,5 +70,25 @@ public  class AudioManager : SingletonMonoBehavior<AudioManager>
         }
     }
     
+    //TOD0: Add Resource auto loading
+    public void PlayBackgroundMusic(string name)
+    {
+        if (soundDictionary.TryGetValue(name, out Sound sound))
+        {
+            sound.source.Play();
+        }
+        else
+        {
+            Debug.LogWarning($"Sound {name} not found!");
+        }
+    }
+    //TOD0: Add Resource auto loading
+    public void StopBackgroundMusic(string name)
+    {
+        if (soundDictionary.TryGetValue(name, out Sound sound))
+        {
+            sound.source.Stop();
+        }
+    }
     
 }
