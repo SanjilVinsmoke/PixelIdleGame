@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace Test
 {
@@ -6,5 +7,9 @@ namespace Test
 
     {
 
+        private void Start()
+        {
+
+        }
     }
 }
