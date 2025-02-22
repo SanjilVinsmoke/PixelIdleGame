@@ -3,5 +3,5 @@
     public interface IBaseIdleComponent
     {
         
-    }gi
+    }
 }
