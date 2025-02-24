@@ -2,8 +2,8 @@
 {
     public interface IBaseAttackComponent
     {
-            bool CanAttack { get; }
-            void Attack();
+        bool CanAttack { get; }
+        void Attack();
 
     }
 }

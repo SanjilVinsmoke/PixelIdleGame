@@ -1,32 +1,41 @@
 ﻿using TMPro;
 using UnityEngine;
 using Utils;
+using System;
 
-public abstract class BaseState<T>
+/// <summary>
+/// Base class for all states in the state machine.
+/// </summary>
+public abstract class BaseState<T, TEvent> where TEvent : Enum
 {
     protected T owner;
-    protected StateMachine<T> stateMachine;
+    protected StateMachine<T, TEvent> stateMachine;
     private TextMeshPro stateLabel;
-    
+
     // Inspector debug properties
     public string StateName => GetType().Name;
     public string StateDescription => GetStateDescription();
     public Color StateColor => GetStateColor();
 
-    public virtual void Initialize(T owner, StateMachine<T> stateMachine)
+    /// <summary>
+    /// Initializes the state with the owner and state machine.
+    /// </summary>
+    public virtual void Initialize(T owner, StateMachine<T, TEvent> stateMachine)
     {
         this.owner = owner;
         this.stateMachine = stateMachine;
 
-        if (StateMachine<T>.DebugMode && owner is MonoBehaviour ownerBehaviour)
+        if (StateMachine<T, TEvent>.DebugMode && owner is MonoBehaviour ownerBehaviour)
         {
             SetupDebugVisuals(ownerBehaviour);
         }
     }
 
+    /// <summary>
+    /// Sets up the debug state label above the owner's head.
+    /// </summary>
     private void SetupDebugVisuals(MonoBehaviour ownerBehaviour)
     {
-        // Create state label above player head if it doesn't exist
         if (stateLabel == null)
         {
             GameObject labelObj = new GameObject($"{ownerBehaviour.name}_StateLabel");
@@ -36,18 +45,24 @@ public abstract class BaseState<T>
             stateLabel = labelObj.AddComponent<TextMeshPro>();
             stateLabel.alignment = TextAlignmentOptions.Center;
             stateLabel.fontSize = 3;
-            stateLabel.enabled = StateMachine<T>.DebugMode;
+            stateLabel.enabled = StateMachine<T, TEvent>.DebugMode;
         }
     }
 
+    /// <summary>
+    /// Called when the state is entered.
+    /// </summary>
     public virtual void Enter()
     {
-        if (StateMachine<T>.DebugMode)
+        if (StateMachine<T, TEvent>.DebugMode)
         {
             UpdateDebugVisuals();
         }
     }
 
+    /// <summary>
+    /// Called when the state is exited.
+    /// </summary>
     public virtual void Exit()
     {
         if (stateLabel != null)
@@ -56,19 +71,30 @@ public abstract class BaseState<T>
         }
     }
 
+    /// <summary>
+    /// Called every frame while the state is active.
+    /// </summary>
     public virtual void Update()
     {
-        if (StateMachine<T>.DebugMode && stateLabel != null)
+        if (StateMachine<T, TEvent>.DebugMode && stateLabel != null)
         {
-            // Keep the label facing the camera
-            stateLabel.transform.rotation = Quaternion.LookRotation(
-                stateLabel.transform.position - Camera.main.transform.position
-            );
+            if (Camera.main != null) // Avoid potential NullReferenceException
+            {
+                stateLabel.transform.rotation = Quaternion.LookRotation(
+                    stateLabel.transform.position - Camera.main.transform.position
+                );
+            }
         }
     }
 
+    /// <summary>
+    /// Called during FixedUpdate for physics-related logic.
+    /// </summary>
     public virtual void FixedUpdate() { }
 
+    /// <summary>
+    /// Updates the debug label with the state name and color.
+    /// </summary>
     private void UpdateDebugVisuals()
     {
         if (stateLabel != null)
@@ -78,6 +104,9 @@ public abstract class BaseState<T>
         }
     }
 
+    /// <summary>
+    /// Retrieves the state description from the StateDescriptionAttribute.
+    /// </summary>
     private string GetStateDescription()
     {
         var attributes = GetType().GetCustomAttributes(typeof(StateDescriptionAttribute), true);
@@ -88,6 +117,9 @@ public abstract class BaseState<T>
         return "No description available";
     }
 
+    /// <summary>
+    /// Retrieves the state color from the StateDebugColorAttribute.
+    /// </summary>
     private Color GetStateColor()
     {
         var attributes = GetType().GetCustomAttributes(typeof(StateDebugColorAttribute), true);

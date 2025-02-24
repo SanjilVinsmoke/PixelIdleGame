@@ -1,9 +1,12 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace Component.Interfaces
 {
     public class HealthComponent : MonoBehaviour, IHealthComponent
     {
+        public Action<float> OnHealthChanged { get; set; }
+        public Action OnDeath { get; set; }
         public float Health { get; set; }
         
         // Add Scritable Object 
@@ -15,6 +18,11 @@ namespace Component.Interfaces
             {
                 //SendEvent
             }
+        }
+
+        public void Heal(float healAmount)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -1,50 +1,58 @@
 ﻿using UnityEngine;
+using Component;
+using Component.Interfaces;
 
-namespace Test
+using Utils; 
+public enum PlayerEvent
 {
-    public class Player : MonoBehaviour
+    Attack,
+    Die,
+    Hit,
+}
 
+public class Player : MonoBehaviour
+{
+    [AutoRequire]
+    public HealthComponent healthComponent;
+
+    [AutoRequire]
+    public AttackComponent attackComponent;
+
+    private StateMachine<Player, PlayerEvent> stateMachine;
+
+    private void Awake()
     {
-        private StateMachine<Player> stateMachine;
+        ComponentInjector.InjectComponents(this);
+    }
 
-        private void Start()
+    private void Start()
+    {
+        // Here we configure the event mappings. These mappings are provided externally.
+        stateMachine = new StateMachine<Player,PlayerEvent>(this, sm =>
         {
-            stateMachine = new StateMachine<Player>(this);
-            stateMachine.AddState(new PlayerIdleState());
-            stateMachine.AddState(new PlayerAttackState());
-            stateMachine.SetInitialState<PlayerIdleState>();
-            
-        }
+            sm.AddEventMapping(PlayerEvent.Attack, () => sm.ChangeState<PlayerAttackState>());
+            // sm.AddEventMapping(PlayerEvent.Die,    () => sm.ChangeState<PlayerDeathState>());
+            // sm.AddEventMapping(PlyerEvent.Hit, () => sm.ChangeState<PlayerHitState>());
+        });
 
+        // Register states
+        stateMachine.AddState(new PlayerIdleState());
+        stateMachine.AddState(new PlayerAttackState());
+        // stateMachine.AddState(new PlayerDeathState());
+        // stateMachine.AddState(new PlayerHitState());
+        stateMachine.SetInitialState<PlayerIdleState>();
+    }
 
-        //  TODO : Add Editor-only method to toggle debug mode
-        public  void  ToggleDebugMode()
-        {
-            StateMachine<Player>.ToggleDebugMode();
-        }
-        void Update()
-        {
-            // Update the state machine every frame.
-            stateMachine.Update();
+    private void Update()
+    {
+        stateMachine.Update();
 
-            // Optional: Log the current state if debug mode is enabled.
-            if (StateMachine<Player>.DebugMode)
-            {
-                Debug.Log("Current State: " + stateMachine.CurrentStateName);
-            }
+        
+    }
 
-        }
-
-        void FixedUpdate()
-        {
-            stateMachine.FixedUpdate();
-        }
-
-        public void ChangePlayerState<TState>() where TState : BaseState<Player>
-        {
-            stateMachine.ChangeState<TState>();
-        }
-
-
+ 
+    private void OnDestroy()
+    {
+        stateMachine.Dispose();
     }
 }

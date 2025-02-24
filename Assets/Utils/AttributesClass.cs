@@ -1,4 +1,6 @@
-﻿namespace Utils
+﻿using System;
+
+namespace Utils
 {
     using UnityEngine;
     using TMPro;
@@ -62,6 +64,11 @@
             this.description = description;
         }
     }
+    
+
+    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
+    public class AutoRequireAttribute : Attribute { }
+
     
     
     
