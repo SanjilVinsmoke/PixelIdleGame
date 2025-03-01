@@ -5,6 +5,7 @@ using Component.Interfaces;
 using Utils; 
 public enum PlayerEvent
 {
+    Idle,
     Attack,
     Die,
     Hit,
@@ -23,6 +24,7 @@ public class Player : MonoBehaviour
     private void Awake()
     {
         ComponentInjector.InjectComponents(this);
+        StateMachine<Player,PlayerEvent>.DebugMode = true;
     }
 
     private void Start()
@@ -30,6 +32,7 @@ public class Player : MonoBehaviour
         // Here we configure the event mappings. These mappings are provided externally.
         stateMachine = new StateMachine<Player,PlayerEvent>(this, sm =>
         {
+            sm.AddEventMapping(PlayerEvent.Idle,    () => sm.ChangeState<PlayerIdleState>());
             sm.AddEventMapping(PlayerEvent.Attack, () => sm.ChangeState<PlayerAttackState>());
             // sm.AddEventMapping(PlayerEvent.Die,    () => sm.ChangeState<PlayerDeathState>());
             // sm.AddEventMapping(PlyerEvent.Hit, () => sm.ChangeState<PlayerHitState>());

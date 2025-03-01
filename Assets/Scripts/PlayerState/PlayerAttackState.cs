@@ -1,37 +1,57 @@
 ﻿
 
+    using System;
+    using UnityEngine;
     using Utils;
 
     [StateDescription("Player is attacking")]
     [StateDebugColor(StateDebugColorAttribute.UnityColor.Red)]
     public class PlayerAttackState: BaseState<Player, PlayerEvent>
-    {
+    { 
+        
+        private float attackStartTime;
+        private bool attackPerformed { get; set; }
+
         public override void Enter()
         {
             base.Enter();
+            attackPerformed = false;
+            attackStartTime = Time.time;
             
-            // Play the attack animation if an animator exists
-            // if (owner.animatorComponent != null)
-            // {
-            //     owner.animatorComponent.Play("Attack");
-            // }
+            Attack();
+          
         }
 
-        // public override void Update()
-        // {
-        //     base.Update();
-        //
-        //     // Check for input to attack.
-        //     if (Input.GetKeyDown(KeyCode.Space))
-        //     {
-        //         stateMachine.ProcessEvent(PlayerEvent.Attack); // Use event instead of direct state change
-        //     }
-        //
-        //     // // Check if the player's health is depleted.
-        //     // if (owner.healthComponent != null && owner.healthComponent.IsDead)
-        //     // {
-        //     //     stateMachine.ProcessEvent(PlayerEvent.Die);
-        //     // }
-        // }
+     
+        private void Attack()
+        {
+            if (owner.attackComponent != null)
+            {
+                owner.attackComponent.Attack();
+                attackPerformed = true;
+            }
+        }
+
+
+
+        public override void Update()
+        {
+            base.Update();
+     
+            if(attackPerformed && Time.time >= attackStartTime + owner.attackComponent.attackCooldown)
+            {
+                stateMachine.ProcessEvent(PlayerEvent.Idle);
+            }
+           
+           
+        }
+        
+        public override void Exit()
+        {
+            base.Exit();
+          
+        }
+
+    
     }
    

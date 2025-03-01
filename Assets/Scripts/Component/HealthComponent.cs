@@ -22,7 +22,10 @@ namespace Component.Interfaces
 
         public void Heal(float healAmount)
         {
-            throw new NotImplementedException();
+            Health += healAmount;
+            OnHealthChanged?.Invoke(Health);
+
+
         }
     }
 }

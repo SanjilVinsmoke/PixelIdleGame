@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 
+
+
 namespace Component
 {
     public class AttackComponent : MonoBehaviour, Interfaces.IBaseAttackComponent

@@ -9,6 +9,8 @@ public class PlayerIdleState : BaseState<Player, PlayerEvent>
     {
         base.Enter();
         
+        DOTweenHelper.DoPulse(owner.transform, 1.2f, 1.2f);
+        
         // Play the idle animation if an animator exists
         // if (owner.animatorComponent != null)
         // {
