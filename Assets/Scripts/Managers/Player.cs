@@ -20,11 +20,19 @@ public class Player : MonoBehaviour
     public AttackComponent attackComponent;
 
     private StateMachine<Player, PlayerEvent> stateMachine;
+    public delegate void UIButtonPressedHandler();
+    public event UIButtonPressedHandler OnJumpButtonPressed;
+    public event UIButtonPressedHandler OnAttackButtonPressed;
 
     private void Awake()
     {
         ComponentInjector.InjectComponents(this);
         StateMachine<Player,PlayerEvent>.DebugMode = true;
+    }
+    
+    public void InvokeAttack()
+    {
+        OnAttackButtonPressed?.Invoke();
     }
 
     private void Start()
