@@ -5,5 +5,7 @@
         public void TakeDamage(float damage);
         public void Die();
         
+        public void OnHit();
+        
     }
 }

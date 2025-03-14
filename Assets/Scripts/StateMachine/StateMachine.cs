@@ -74,7 +74,7 @@ public class StateMachine<T, TEvent> : IDisposable where TEvent : Enum
         eventActions[stateEvent] = action;
     }
 
-    public void ProcessEvent(TEvent stateEvent)
+    public void  ProcessEvent(TEvent stateEvent)
     {
         if (eventActions.TryGetValue(stateEvent, out Action action))
         {

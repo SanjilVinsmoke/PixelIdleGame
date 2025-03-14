@@ -30,6 +30,7 @@
                 owner.attackComponent.Attack();
                 attackPerformed = true;
             }
+            
         }
 
 
@@ -46,12 +47,7 @@
            
         }
         
-        public override void Exit()
-        {
-            base.Exit();
-          
-        }
-
+     
     
     }
    

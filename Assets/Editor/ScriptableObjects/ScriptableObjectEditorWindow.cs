@@ -12,6 +12,14 @@ public class ScriptableObjectEditorWindow : EditorWindow
     private Dictionary<ScriptableObject, bool> foldoutStates = new Dictionary<ScriptableObject, bool>();
     private GUIStyle headerStyle;
     private ScriptableObject selectedObject;
+    
+    // Folder filtering
+    private bool useProjectFilter = true;
+    private bool useFolderFilter = false;
+    private string selectedFolderPath = "";
+    private string folderDisplayName = "No folder selected";
+    private List<string> recentFolders = new List<string>();
+    private const int MAX_RECENT_FOLDERS = 5;
 
     // Add a menu item to open the window
     [MenuItem("Tools/Scriptable Object Editor")]
@@ -28,6 +36,9 @@ public class ScriptableObjectEditorWindow : EditorWindow
         headerStyle.fontSize = 14;
         headerStyle.margin = new RectOffset(5, 5, 5, 5);
 
+        // Load recent folders from EditorPrefs
+        LoadRecentFolders();
+
         // Load all scriptable objects on startup
         RefreshObjectList();
     }
@@ -35,6 +46,7 @@ public class ScriptableObjectEditorWindow : EditorWindow
     private void OnGUI()
     {
         DrawHeader();
+        DrawFilterOptions();
         DrawSearchBar();
         DrawObjectList();
         DrawSelectedObjectDetails();
@@ -62,6 +74,103 @@ public class ScriptableObjectEditorWindow : EditorWindow
         EditorGUILayout.EndHorizontal();
     }
 
+    private void DrawFilterOptions()
+    {
+        EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+        GUILayout.Label("Filter Settings", EditorStyles.boldLabel);
+
+        EditorGUILayout.BeginHorizontal();
+        
+        // Project filter toggle
+        bool newUseProjectFilter = EditorGUILayout.ToggleLeft("Entire Project", useProjectFilter, GUILayout.Width(120));
+        if (newUseProjectFilter != useProjectFilter)
+        {
+            useProjectFilter = newUseProjectFilter;
+            if (useProjectFilter)
+            {
+                useFolderFilter = false;
+            }
+            RefreshObjectList();
+        }
+        
+        // Folder filter toggle
+        bool newUseFolderFilter = EditorGUILayout.ToggleLeft("Specific Folder", useFolderFilter, GUILayout.Width(120));
+        if (newUseFolderFilter != useFolderFilter)
+        {
+            useFolderFilter = newUseFolderFilter;
+            if (useFolderFilter)
+            {
+                useProjectFilter = false;
+                if (string.IsNullOrEmpty(selectedFolderPath))
+                {
+                    SelectFolder();
+                }
+            }
+            RefreshObjectList();
+        }
+
+        EditorGUILayout.EndHorizontal();
+
+        // Show folder selection if folder filter is enabled
+        if (useFolderFilter)
+        {
+            EditorGUILayout.BeginHorizontal();
+            
+            EditorGUILayout.LabelField("Current Folder:", GUILayout.Width(100));
+            EditorGUILayout.LabelField(folderDisplayName, EditorStyles.boldLabel);
+            
+            if (GUILayout.Button("Change", GUILayout.Width(80)))
+            {
+                SelectFolder();
+            }
+            
+            EditorGUILayout.EndHorizontal();
+
+            // Recent folders
+            if (recentFolders.Count > 0)
+            {
+                EditorGUILayout.Space();
+                EditorGUILayout.LabelField("Recent Folders:", EditorStyles.boldLabel);
+                
+                for (int i = 0; i < recentFolders.Count; i++)
+                {
+                    string path = recentFolders[i];
+                    string folderName = Path.GetFileName(path);
+                    if (string.IsNullOrEmpty(folderName))
+                        folderName = path; // For root folders
+                        
+                    EditorGUILayout.BeginHorizontal();
+                    
+                    if (GUILayout.Button(folderName, EditorStyles.linkLabel))
+                    {
+                        selectedFolderPath = path;
+                        UpdateFolderDisplayName();
+                        RefreshObjectList();
+                        
+                        // Move to top of recent list
+                        if (i > 0)
+                        {
+                            recentFolders.RemoveAt(i);
+                            recentFolders.Insert(0, path);
+                            SaveRecentFolders();
+                        }
+                    }
+                    
+                    // Show full path on hover
+                    if (GUILayoutUtility.GetLastRect().Contains(Event.current.mousePosition))
+                    {
+                        Rect tooltipRect = GUILayoutUtility.GetLastRect();
+                        GUI.Label(tooltipRect, new GUIContent("", path));
+                    }
+                    
+                    EditorGUILayout.EndHorizontal();
+                }
+            }
+        }
+        
+        EditorGUILayout.EndVertical();
+    }
+
     private void DrawSearchBar()
     {
         EditorGUILayout.BeginHorizontal(EditorStyles.toolbar);
@@ -80,7 +189,8 @@ public class ScriptableObjectEditorWindow : EditorWindow
     private void DrawObjectList()
     {
         EditorGUILayout.BeginVertical(EditorStyles.helpBox);
-        GUILayout.Label("Found Objects: " + foundObjects.Count, EditorStyles.boldLabel);
+        string locationText = useProjectFilter ? "Project" : (useFolderFilter ? "Folder" : "");
+        GUILayout.Label($"Found Objects ({locationText}): {foundObjects.Count}", EditorStyles.boldLabel);
         
         scrollPosition = EditorGUILayout.BeginScrollView(scrollPosition, GUILayout.Height(200));
         
@@ -139,7 +249,7 @@ public class ScriptableObjectEditorWindow : EditorWindow
         GUILayout.Label("Object Details", EditorStyles.boldLabel);
         
         // Create a custom editor for the selected object
-        Editor editor = Editor.CreateEditor(selectedObject);
+        UnityEditor.Editor editor = UnityEditor.Editor.CreateEditor(selectedObject);
         editor.OnInspectorGUI();
         
         EditorGUILayout.Space();
@@ -171,9 +281,38 @@ public class ScriptableObjectEditorWindow : EditorWindow
     {
         foundObjects.Clear();
         
-        // Find all scriptable objects in the project
-        string[] guids = AssetDatabase.FindAssets("t:ScriptableObject");
+        if (useProjectFilter)
+        {
+            // Find all scriptable objects in the project
+            LoadScriptableObjectsFromProject();
+        }
+        else if (useFolderFilter && !string.IsNullOrEmpty(selectedFolderPath))
+        {
+            // Find all scriptable objects in the selected folder
+            LoadScriptableObjectsFromFolder(selectedFolderPath);
+        }
         
+        // Apply search filter if we have one
+        if (!string.IsNullOrEmpty(searchString))
+        {
+            FilterObjectList();
+        }
+    }
+
+    private void LoadScriptableObjectsFromProject()
+    {
+        string[] guids = AssetDatabase.FindAssets("t:ScriptableObject");
+        LoadObjectsFromGuids(guids);
+    }
+
+    private void LoadScriptableObjectsFromFolder(string folderPath)
+    {
+        string[] guids = AssetDatabase.FindAssets("t:ScriptableObject", new[] { folderPath });
+        LoadObjectsFromGuids(guids);
+    }
+
+    private void LoadObjectsFromGuids(string[] guids)
+    {
         foreach (string guid in guids)
         {
             string path = AssetDatabase.GUIDToAssetPath(guid);
@@ -183,12 +322,6 @@ public class ScriptableObjectEditorWindow : EditorWindow
             {
                 foundObjects.Add(obj);
             }
-        }
-        
-        // Apply search filter if we have one
-        if (!string.IsNullOrEmpty(searchString))
-        {
-            FilterObjectList();
         }
     }
 
@@ -201,22 +334,111 @@ public class ScriptableObjectEditorWindow : EditorWindow
         }
         
         string searchLower = searchString.ToLower();
+        List<ScriptableObject> filteredList = new List<ScriptableObject>();
         
-        // Find all scriptable objects matching the search
-        string[] guids = AssetDatabase.FindAssets("t:ScriptableObject");
-        foundObjects.Clear();
-        
-        foreach (string guid in guids)
+        foreach (var obj in foundObjects)
         {
-            string path = AssetDatabase.GUIDToAssetPath(guid);
-            string name = Path.GetFileNameWithoutExtension(path);
-            
-            if (name.ToLower().Contains(searchLower))
+            if (obj != null && obj.name.ToLower().Contains(searchLower))
             {
-                ScriptableObject obj = AssetDatabase.LoadAssetAtPath<ScriptableObject>(path);
-                if (obj != null)
+                filteredList.Add(obj);
+            }
+        }
+        
+        foundObjects = filteredList;
+    }
+
+    private void SelectFolder()
+    {
+        string startFolder = string.IsNullOrEmpty(selectedFolderPath) ? "Assets" : selectedFolderPath;
+        string folderPath = EditorUtility.OpenFolderPanel("Select Folder for ScriptableObjects", startFolder, "");
+        
+        if (string.IsNullOrEmpty(folderPath))
+            return;
+            
+        // Convert to project relative path if needed
+        if (folderPath.StartsWith(Application.dataPath))
+        {
+            folderPath = "Assets" + folderPath.Substring(Application.dataPath.Length);
+        }
+        else if (!folderPath.StartsWith("Assets"))
+        {
+            // Not in the project
+            EditorUtility.DisplayDialog("Invalid Folder", 
+                "Please select a folder inside your Unity project.", "OK");
+            return;
+        }
+        
+        selectedFolderPath = folderPath;
+        UpdateFolderDisplayName();
+        
+        // Add to recent folders
+        AddToRecentFolders(folderPath);
+        
+        // Refresh the list
+        RefreshObjectList();
+    }
+
+    private void UpdateFolderDisplayName()
+    {
+        if (string.IsNullOrEmpty(selectedFolderPath))
+        {
+            folderDisplayName = "No folder selected";
+            return;
+        }
+        
+        folderDisplayName = selectedFolderPath;
+    }
+
+    private void AddToRecentFolders(string folderPath)
+    {
+        // Remove if already exists
+        recentFolders.Remove(folderPath);
+        
+        // Add to beginning of list
+        recentFolders.Insert(0, folderPath);
+        
+        // Trim list if needed
+        if (recentFolders.Count > MAX_RECENT_FOLDERS)
+        {
+            recentFolders.RemoveAt(recentFolders.Count - 1);
+        }
+        
+        // Save to EditorPrefs
+        SaveRecentFolders();
+    }
+
+    private void SaveRecentFolders()
+    {
+        for (int i = 0; i < MAX_RECENT_FOLDERS; i++)
+        {
+            string key = "SOEditor_RecentFolder_" + i;
+            
+            if (i < recentFolders.Count)
+            {
+                EditorPrefs.SetString(key, recentFolders[i]);
+            }
+            else
+            {
+                EditorPrefs.DeleteKey(key);
+            }
+        }
+    }
+
+    private void LoadRecentFolders()
+    {
+        recentFolders.Clear();
+        
+        for (int i = 0; i < MAX_RECENT_FOLDERS; i++)
+        {
+            string key = "SOEditor_RecentFolder_" + i;
+            
+            if (EditorPrefs.HasKey(key))
+            {
+                string folderPath = EditorPrefs.GetString(key);
+                
+                if (!string.IsNullOrEmpty(folderPath))
                 {
-                    foundObjects.Add(obj);
+                    recentFolders.Add(folderPath);
                 }
             }
         }
@@ -256,12 +478,20 @@ public class ScriptableObjectEditorWindow : EditorWindow
         // Create the scriptable object instance
         ScriptableObject newObj = ScriptableObject.CreateInstance(type);
         
+        // Determine default save path
+        string initialPath = "Assets";
+        if (useFolderFilter && !string.IsNullOrEmpty(selectedFolderPath))
+        {
+            initialPath = selectedFolderPath;
+        }
+        
         // Create save dialog
         string path = EditorUtility.SaveFilePanelInProject(
             "Save Scriptable Object",
             "New" + type.Name,
             "asset",
-            "Save the scriptable object where?"
+            "Save the scriptable object where?",
+            initialPath
         );
         
         if (string.IsNullOrEmpty(path))

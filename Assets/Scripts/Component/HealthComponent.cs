@@ -1,4 +1,5 @@
 ﻿using System;
+using ScriptableObjects;
 using UnityEngine;
 
 namespace Component.Interfaces
@@ -8,15 +9,24 @@ namespace Component.Interfaces
         public Action<float> OnHealthChanged { get; set; }
         public Action OnDeath { get; set; }
         public float Health { get; set; }
-        
-        // Add Scritable Object 
+        [SerializeField]
+        private HealthSo healthValues;
+    
+        private void Awake()
+        {
+           
+            Health = healthValues.health;
+            
+        }
         public void TakeDamage(float damage)
         {
+            
             Health -= damage;
            // sendEvent
             if (Health <= 0)
             {
-                //SendEvent
+                healthValues.isDead = true;
+                OnDeath?.Invoke();
             }
         }
 

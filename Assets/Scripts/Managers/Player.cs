@@ -11,7 +11,7 @@ public enum PlayerEvent
     Hit,
 }
 
-public class Player : MonoBehaviour
+public class Player : MonoBehaviour, IDamageable
 {
     [AutoRequire]
     public HealthComponent healthComponent;
@@ -42,15 +42,15 @@ public class Player : MonoBehaviour
         {
             sm.AddEventMapping(PlayerEvent.Idle,    () => sm.ChangeState<PlayerIdleState>());
             sm.AddEventMapping(PlayerEvent.Attack, () => sm.ChangeState<PlayerAttackState>());
-            // sm.AddEventMapping(PlayerEvent.Die,    () => sm.ChangeState<PlayerDeathState>());
-            // sm.AddEventMapping(PlyerEvent.Hit, () => sm.ChangeState<PlayerHitState>());
+            sm.AddEventMapping(PlayerEvent.Hit,    () => sm.ChangeState<PlayerHitState>());
+          
         });
 
         // Register states
         stateMachine.AddState(new PlayerIdleState());
         stateMachine.AddState(new PlayerAttackState());
-        // stateMachine.AddState(new PlayerDeathState());
-        // stateMachine.AddState(new PlayerHitState());
+        stateMachine.AddState(new PlayerHitState());
+        
         stateMachine.SetInitialState<PlayerIdleState>();
     }
 
@@ -65,5 +65,22 @@ public class Player : MonoBehaviour
     private void OnDestroy()
     {
         stateMachine.Dispose();
+    }
+
+    public void TakeDamage(float damage)
+    {
+        healthComponent.TakeDamage(damage);
+        stateMachine.ProcessEvent(PlayerEvent.Hit);
+
+    }
+    
+    public void OnHit()
+    {
+ 
+    }
+
+    public void Die()
+    {
+        stateMachine.ProcessEvent(PlayerEvent.Die);
     }
 }
