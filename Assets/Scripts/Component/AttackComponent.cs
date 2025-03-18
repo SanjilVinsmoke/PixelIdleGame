@@ -30,12 +30,12 @@ namespace Component
             {
                 Debug.Log("Attacking!");
                 lastAttackTime = Time.time;
-                DetectDamagable();
+                DetectDamageable();
             
             }
         }
 
-        private void DetectDamagable()
+        private void DetectDamageable()
         {
             if(attackPoint == null) {
                 attackPoint = transform;

@@ -8,6 +8,7 @@ namespace Component.Interfaces
     {
         public Action<float> OnHealthChanged { get; set; }
         public Action OnDeath { get; set; }
+
         public float Health { get; set; }
         [SerializeField]
         private HealthSo healthValues;
@@ -22,6 +23,7 @@ namespace Component.Interfaces
         {
             
             Health -= damage;
+            
            // sendEvent
             if (Health <= 0)
             {
