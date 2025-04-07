@@ -1,3 +1,4 @@
+using Constant;
 using UnityEngine;
 using Utils;
 
@@ -10,13 +11,13 @@ public class PlayerIdleState : BaseState<Player, PlayerEvent>
         base.Enter();
       
         owner.OnAttackButtonPressed += HandleAttackPressed;
-        DOTweenHelper.DoPulse(owner.transform, 1.2f, 1.2f);
+       
         
         // Play the idle animation if an animator exists
-        // if (owner.animatorComponent != null)
-        // {
-        //     owner.animatorComponent.Play("Idle");
-        // }
+        if (owner.animationComponent != null)
+        {
+            owner.animationComponent.PlayAnimation(AnimationName.PlayerAnimationNames.IDLE);
+        }
     }
 
     private void HandleAttackPressed()

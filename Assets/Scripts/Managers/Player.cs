@@ -18,6 +18,9 @@ public class Player : MonoBehaviour, IDamageable
 
     [AutoRequire]
     public AttackComponent attackComponent;
+    
+    [AutoRequire]
+    public AnimationComponent animationComponent;
 
     private StateMachine<Player, PlayerEvent> stateMachine;
     public delegate void UIButtonPressedHandler();

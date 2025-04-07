@@ -18,6 +18,7 @@ namespace Component.Interfaces
            
             Health = healthValues.health;
             
+            
         }
         public void TakeDamage(float damage)
         {
