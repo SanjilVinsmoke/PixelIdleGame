@@ -11,6 +11,7 @@ public class PlayerIdleState : BaseState<Player, PlayerEvent>
         base.Enter();
       
         owner.OnAttackButtonPressed += HandleAttackPressed;
+        owner.OnJumpButtonPressed += HandleJumpPressed;
        
         
         // Play the idle animation if an animator exists
@@ -23,6 +24,10 @@ public class PlayerIdleState : BaseState<Player, PlayerEvent>
     private void HandleAttackPressed()
     {
         stateMachine.ProcessEvent(PlayerEvent.Attack);
+    }
+    private void HandleJumpPressed()
+    {
+        stateMachine.ProcessEvent(PlayerEvent.Jump);
     }
     public override void Exit()
     {

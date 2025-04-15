@@ -3,7 +3,7 @@
 /// <summary>
 /// An abstract state that supports nested (hierarchical) substates.
 /// </summary>
-public abstract class HierarchicalState<T, TEvent> : BaseState<T, TEvent> where TEvent : Enum
+public abstract class `erarchicalState<T, TEvent> : BaseState<T, TEvent> where TEvent : Enum
 {
     protected BaseState<T, TEvent> currentSubState;
 
