@@ -103,6 +103,7 @@ GameObject:
   - component: {fileID: 9123279195240527312}
   - component: {fileID: 6843722939408951806}
   - component: {fileID: 8229975652810895789}
+  - component: {fileID: 5793799374360232608}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -177,6 +178,7 @@ MonoBehaviour:
   animationComponent: {fileID: 0}
   movementComponent: {fileID: 0}
   jumpComponent: {fileID: 0}
+  inputComponent: {fileID: 0}
 --- !u!114 &6558308799607409777
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -203,7 +205,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   movementSo: {fileID: 11400000, guid: c4023ac24b348df46b5d8383f0dc7af7, type: 2}
-  rb: {fileID: 103337127168724126}
+  rb: {fileID: 5793799374360232608}
 --- !u!114 &6843722939408951806
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -217,7 +219,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Actions: {fileID: -944628639613478452, guid: eba4f122f9b67a24e8a43dca0fae0869, type: 3}
-  m_NotificationBehavior: 0
+  m_NotificationBehavior: 3
   m_UIInputModule: {fileID: 0}
   m_DeviceLostEvent:
     m_PersistentCalls:
@@ -228,7 +230,23 @@ MonoBehaviour:
   m_ControlsChangedEvent:
     m_PersistentCalls:
       m_Calls: []
-  m_ActionEvents: []
+  m_ActionEvents:
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 1077f913-a9f9-41b1-acb3-b9ee0adbc744
+    m_ActionName: 'gameplay/fire[/Mouse/leftButton,/Pen/tip]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 50fd2809-3aa3-4a90-988e-1facf6773553
+    m_ActionName: 'gameplay/move[/Keyboard/w,/Keyboard/s,/Keyboard/a,/Keyboard/d]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: c60e0974-d140-4597-a40e-9862193067e9
+    m_ActionName: 'gameplay/look[/Mouse/delta,/Pen/delta]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 792e3115-677d-437c-a44f-00fbe9caeabf
+    m_ActionName: 'gameplay/Jump[/Mouse/rightButton,/Pen/barrel1]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: gameplay
@@ -246,6 +264,33 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce0d9be2bec44e5c976cd83357c0b439, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!50 &5793799374360232608
+Rigidbody2D:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7282828596918356989}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 4
 --- !u!1 &7754178710771900697
 GameObject:
   m_ObjectHideFlags: 0
@@ -384,7 +429,6 @@ GameObject:
   m_Component:
   - component: {fileID: 7934606980366842755}
   - component: {fileID: 8615136233168692400}
-  - component: {fileID: 103337127168724126}
   m_Layer: 0
   m_Name: PlayerCollider
   m_TagString: Untagged
@@ -444,33 +488,6 @@ CapsuleCollider2D:
   m_Offset: {x: 0.0028806403, y: -0.0057612658}
   m_Size: {x: 0.22922046, y: 0.36049938}
   m_Direction: 0
---- !u!50 &103337127168724126
-Rigidbody2D:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8001710500671291992}
-  m_BodyType: 0
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDamping: 0
-  m_AngularDamping: 0.05
-  m_GravityScale: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 0
-  m_Constraints: 0
 --- !u!1 &8542317243759372526
 GameObject:
   m_ObjectHideFlags: 0

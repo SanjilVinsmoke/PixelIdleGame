@@ -1,5 +1,4 @@
 using ScriptableObjects;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class MoveComponent : MonoBehaviour
@@ -41,6 +40,14 @@ public class MoveComponent : MonoBehaviour
         {
             Flip();
         }
+    }
+    public void ApplyFriction(float friction)
+    {
+        // Apply friction to the movement component
+        Vector2 currentVelocity = rb.linearVelocity;
+        float newVelocityX = currentVelocity.x * (1 - friction);
+        rb.linearVelocity = new Vector2(newVelocityX, currentVelocity.y);
+        
     }
     
     

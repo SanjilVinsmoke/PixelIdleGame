@@ -167,7 +167,7 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""0489406a-fcf8-4f1a-90fa-66e8eb935c36"",
-                    ""path"": ""*/{SecondaryAction}"",
+                    ""path"": ""<Keyboard>/space"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",

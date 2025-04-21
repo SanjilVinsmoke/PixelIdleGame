@@ -10,12 +10,12 @@ namespace UIEditor
         
         private void Start()
         {
-            attackButton.onClick.AddListener(player.InvokeAttack);
+           // attackButton.onClick.AddListener(player.InvokeAttack);
         }
         
         private void OnDestroy()
         {
-            attackButton.onClick.RemoveListener(player.InvokeAttack);
+            //attackButton.onClick.RemoveListener(player.InvokeAttack);
         }
 
       

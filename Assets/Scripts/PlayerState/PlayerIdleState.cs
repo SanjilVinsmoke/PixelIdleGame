@@ -1,5 +1,8 @@
+using System.Transactions;
 using Constant;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using Utils;
 
 [StateDescription("Player is idling")]
@@ -9,10 +12,17 @@ public class PlayerIdleState : BaseState<Player, PlayerEvent>
     public override void Enter()
     {
         base.Enter();
-      
-        owner.OnAttackButtonPressed += HandleAttackPressed;
+        
+        // Register event handlers
         owner.OnJumpButtonPressed += HandleJumpPressed;
-       
+        owner.OnAttackButtonPressed += HandleAttackPressed;
+        owner.OnMoveButtonPressed += HandleMovePressed;
+        
+        // Apply small deceleration when entering idle for smoother stop
+        if (owner.movementComponent != null)
+        {
+            owner.movementComponent.ApplyFriction(0.5f);
+        }
         
         // Play the idle animation if an animator exists
         if (owner.animationComponent != null)
@@ -29,17 +39,34 @@ public class PlayerIdleState : BaseState<Player, PlayerEvent>
     {
         stateMachine.ProcessEvent(PlayerEvent.Jump);
     }
+
+    private void HandleMovePressed(InputAction.CallbackContext context)
+    {
+        Vector2 input = context.ReadValue<Vector2>();
+        if (input.magnitude > 0.1f)
+        {
+            stateMachine.ProcessEvent(PlayerEvent.Move);
+        }
+    }
     public override void Exit()
     {
         base.Exit();
-     
+    
         owner.OnAttackButtonPressed -= HandleAttackPressed;
+        owner.OnJumpButtonPressed -= HandleJumpPressed;
+        owner.OnMoveButtonPressed -= HandleMovePressed;
     }
+    
+    // if Input detected, process the event
+    
+    
     public override void Update()
     {
         base.Update();
 
         // Check for input to attack.
+       
+    
        
 
         // // Check if the player's health is depleted.

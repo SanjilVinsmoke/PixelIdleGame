@@ -1,12 +1,14 @@
 ﻿using UnityEngine;
 using Component;
 using Component.Interfaces;
-
+using Unity.VisualScripting;
+using UnityEngine.InputSystem;
 using Utils; 
 public enum PlayerEvent
 {
     Idle,
     Attack,
+    Move,
     Jump,
     Die,
     Hit,
@@ -33,25 +35,35 @@ public class Player : MonoBehaviour, IDamageable
 
     private StateMachine<Player, PlayerEvent> stateMachine;
     public delegate void ButtonPressedHandler();
+    public delegate void MoveButtonPressedHandler(InputAction.CallbackContext context);
     public event ButtonPressedHandler OnJumpButtonPressed;
     public event ButtonPressedHandler OnAttackButtonPressed;
+    public event MoveButtonPressedHandler OnMoveButtonPressed;
 
     private void Awake()
     {
         ComponentInjector.InjectComponents(this);
         StateMachine<Player,PlayerEvent>.DebugMode = true;
-        // Register input events
-        inputComponent.OnFirePerformed += () =>
-        {
-            OnAttackButtonPressed?.Invoke();
-        };
-        inputComponent.OnJumpPerformed += () =>
-        {
-            OnJumpButtonPressed?.Invoke();
-        };
+        
+        // Register input events with named methods for proper cleanup
+        inputComponent.OnFirePerformed += HandleFireInput;
+        inputComponent.OnJumpPerformed += HandleJumpInput;
+        inputComponent.OnMovePerformed += HandleMoveInput;
+        
+        // Connect jump component landing event
+        jumpComponent.OnLanded += HandleJumpLanding;
     }
     
+    private void HandleFireInput() => OnAttackButtonPressed?.Invoke();
+    private void HandleJumpInput() => OnJumpButtonPressed?.Invoke();
+    private void HandleMoveInput(InputAction.CallbackContext context) => OnMoveButtonPressed?.Invoke(context);
     
+    private void HandleJumpLanding()
+    {
+        // Only transition to idle if we're currently in jump state
+        if (stateMachine.CurrentState is PlayerJumpState)
+            stateMachine.ProcessEvent(PlayerEvent.Idle);
+    }
  
     private void Start()
     {
@@ -60,7 +72,8 @@ public class Player : MonoBehaviour, IDamageable
         {
             sm.AddEventMapping(PlayerEvent.Idle,    () => sm.ChangeState<PlayerIdleState>());
             sm.AddEventMapping(PlayerEvent.Attack, () => sm.ChangeState<PlayerAttackState>());
-          //  sm.AddEventMapping(PlayerEvent.Jump,   () => sm.ChangeState<PlayerJumpState>());
+            sm.AddEventMapping(PlayerEvent.Move,   () => sm.ChangeState<PlayerMoveState>());
+            sm.AddEventMapping(PlayerEvent.Jump,   () => sm.ChangeState<PlayerJumpState>());
             sm.AddEventMapping(PlayerEvent.Hit,    () => sm.ChangeState<PlayerHitState>());
           
         });
@@ -69,6 +82,8 @@ public class Player : MonoBehaviour, IDamageable
         stateMachine.AddState(new PlayerIdleState());
         stateMachine.AddState(new PlayerAttackState());
         stateMachine.AddState(new PlayerHitState());
+        stateMachine.AddState(new PlayerMoveState());
+        stateMachine.AddState(new PlayerJumpState());
         
         stateMachine.SetInitialState<PlayerIdleState>();
     }
@@ -80,9 +95,21 @@ public class Player : MonoBehaviour, IDamageable
         
     }
 
- 
     private void OnDestroy()
     {
+        // Clean up event subscriptions to prevent memory leaks
+        if (inputComponent != null)
+        {
+            inputComponent.OnFirePerformed -= HandleFireInput;
+            inputComponent.OnJumpPerformed -= HandleJumpInput;
+            inputComponent.OnMovePerformed -= HandleMoveInput;
+        }
+        
+        if (jumpComponent != null)
+        {
+            jumpComponent.OnLanded -= HandleJumpLanding;
+        }
+        
         stateMachine.Dispose();
     }
 
@@ -102,4 +129,9 @@ public class Player : MonoBehaviour, IDamageable
     {
         stateMachine.ProcessEvent(PlayerEvent.Die);
     }
+    
+  
+    
+    
+    
 }

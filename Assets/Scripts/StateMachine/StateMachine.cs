@@ -9,6 +9,9 @@ public class StateMachine<T, TEvent> : IDisposable where TEvent : Enum
     private BaseState<T, TEvent> currentState;
     private Dictionary<TEvent, Action> eventActions = new Dictionary<TEvent, Action>();
 
+    // Add this property to expose the current state
+    public BaseState<T, TEvent> CurrentState => currentState;
+
     public static bool DebugMode { get; set; } = false;
 
     public StateMachine(T owner, Action<StateMachine<T, TEvent>> configureEventMappings = null)
@@ -74,7 +77,7 @@ public class StateMachine<T, TEvent> : IDisposable where TEvent : Enum
         eventActions[stateEvent] = action;
     }
 
-    public void  ProcessEvent(TEvent stateEvent)
+    public void ProcessEvent(TEvent stateEvent)
     {
         if (eventActions.TryGetValue(stateEvent, out Action action))
         {
