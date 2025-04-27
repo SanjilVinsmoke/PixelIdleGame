@@ -105,8 +105,8 @@ public class JumpComponent : MonoBehaviour
             if (!isGrounded && !canUseCoyote)
                 extraJumps--;
 
-            // compute initial velocity for desired max height
-            float g = Physics2D.gravity.y * rb.gravityScale;
+            // Always use default gravity scale for jump calculation
+            float g = Physics2D.gravity.y * 1f;
             float v0 = Mathf.Sqrt(-2f * g * maxJumpHeight);
 
             // apply jump
