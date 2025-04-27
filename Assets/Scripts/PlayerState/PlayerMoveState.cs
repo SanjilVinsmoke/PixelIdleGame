@@ -1,64 +1,72 @@
-﻿using Constant;
+using Constant;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using Utils;
 
-public class PlayerMoveState: BaseState<Player, PlayerEvent>
+/// <summary>
+/// Player movement state: listens to move input events and drives the MoveComponent.
+/// </summary>
+[StateDebugColor(StateDebugColorAttribute.UnityColor.Blue)]
+[StateDescription("Handles player horizontal movement. Subscribes to input events and moves via MoveComponent.")]
+public class PlayerMoveState : BaseState<Player, PlayerEvent>
 {
+    private float horizontalInput;
+    private const float DeadZone = 0.1f;
+
     public override void Enter()
     {
         base.Enter();
-        if (owner.inputComponent != null)
-        {
-            owner.inputComponent.OnFirePerformed += HandleAttackPressed;
-            owner.inputComponent.OnJumpPerformed += HandleJumpPressed;
-            
-            // We're not subscribing to OnMovePerformed since we're using MoveVector directly
-        }
-        
-        // Play the move animation if an animator exists
-        if (owner.animationComponent != null)
-        {
-            owner.animationComponent.PlayAnimation(AnimationName.PlayerAnimationNames.RUN);
-        }
+    horizontalInput = owner.inputComponent.MoveVector.x;
+        if (Mathf.Abs(horizontalInput) < DeadZone)
+            horizontalInput = 0f;
+        // Subscribe to relevant input events
+        owner.inputComponent.OnMovePerformed   += HandleMovePerformed;
+        owner.inputComponent.OnJumpPerformed   += HandleJumpPressed;
+        owner.inputComponent.OnAttackPerformed += HandleAttackPressed;
+        owner.inputComponent.OnDashPerformed   += HandleDashPressed;
+
+        // Play run animation if available
+        owner.animationComponent?.PlayAnimation(AnimationName.PlayerAnimationNames.RUN);
     }
 
     public override void Update()
     {
         base.Update();
-        
-        // Use movement component to move the player based on input
-        if (owner.movementComponent != null && owner.inputComponent != null)
-        {
-            Vector2 moveInput = owner.inputComponent.MoveVector;
-            
-            // Pass only the x component since your Move method accepts a float
-            owner.movementComponent.Move(moveInput.x);
-            
-            // If movement input stops, return to idle state
-            if (Mathf.Abs(moveInput.x) < 0.1f)
-            {
-                stateMachine.ProcessEvent(PlayerEvent.Idle);
-            }
-        }
+
+        // Drive movement each frame
+        owner.movementComponent.Move(horizontalInput);
     }
 
-    private void HandleAttackPressed()
-    {
-        stateMachine.ProcessEvent(PlayerEvent.Attack);
-    }
-    
-    private void HandleJumpPressed()
-    {
-        stateMachine.ProcessEvent(PlayerEvent.Jump);
-    }
-    
     public override void Exit()
     {
         base.Exit();
-        
-        if (owner.inputComponent != null)
+
+        // Unsubscribe from input events
+        owner.inputComponent.OnMovePerformed   -= HandleMovePerformed;
+        owner.inputComponent.OnJumpPerformed   -= HandleJumpPressed;
+        owner.inputComponent.OnAttackPerformed -= HandleAttackPressed;
+        owner.inputComponent.OnDashPerformed   -= HandleDashPressed;
+
+        owner.movementComponent.Move(0f);
+    }
+
+    private void HandleMovePerformed(InputAction.CallbackContext context)
+    {
+        if (context.performed)
         {
-            owner.inputComponent.OnFirePerformed -= HandleAttackPressed;
-            owner.inputComponent.OnJumpPerformed -= HandleJumpPressed;
+            horizontalInput = context.ReadValue<Vector2>().x;
+            if (Mathf.Abs(horizontalInput) < DeadZone)
+                horizontalInput = 0f;
+        }
+        else if (context.canceled)
+        {
+            // Stop and go back to idle on cancel
+            horizontalInput = 0f;
+            stateMachine.ProcessEvent(PlayerEvent.Idle);
         }
     }
+
+    private void HandleJumpPressed()   => stateMachine.ProcessEvent(PlayerEvent.Jump);
+    private void HandleAttackPressed() => stateMachine.ProcessEvent(PlayerEvent.Attack);
+    private void HandleDashPressed()   => stateMachine.ProcessEvent(PlayerEvent.Dash);
 }

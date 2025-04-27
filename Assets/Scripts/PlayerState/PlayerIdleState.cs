@@ -13,15 +13,12 @@ public class PlayerIdleState : BaseState<Player, PlayerEvent>
     {
         base.Enter();
         
-        // Register event handlers
-        owner.OnJumpButtonPressed += HandleJumpPressed;
-        owner.OnAttackButtonPressed += HandleAttackPressed;
-        owner.OnMoveButtonPressed += HandleMovePressed;
-        
-        // Apply small deceleration when entering idle for smoother stop
-        if (owner.movementComponent != null)
+        // Register event handlers from InputComponent
+        if (owner.inputComponent != null)
         {
-            owner.movementComponent.ApplyFriction(0.5f);
+            owner.inputComponent.OnAttackPerformed += HandleAttackPressed;
+            owner.inputComponent.OnJumpPerformed += HandleJumpPressed;
+            owner.inputComponent.OnMovePerformed += HandleMovePressed;
         }
         
         // Play the idle animation if an animator exists
@@ -35,6 +32,7 @@ public class PlayerIdleState : BaseState<Player, PlayerEvent>
     {
         stateMachine.ProcessEvent(PlayerEvent.Attack);
     }
+
     private void HandleJumpPressed()
     {
         stateMachine.ProcessEvent(PlayerEvent.Jump);
@@ -48,13 +46,17 @@ public class PlayerIdleState : BaseState<Player, PlayerEvent>
             stateMachine.ProcessEvent(PlayerEvent.Move);
         }
     }
+
     public override void Exit()
     {
         base.Exit();
     
-        owner.OnAttackButtonPressed -= HandleAttackPressed;
-        owner.OnJumpButtonPressed -= HandleJumpPressed;
-        owner.OnMoveButtonPressed -= HandleMovePressed;
+        if (owner.inputComponent != null)
+        {
+            owner.inputComponent.OnAttackPerformed -= HandleAttackPressed;
+            owner.inputComponent.OnJumpPerformed -= HandleJumpPressed;
+            owner.inputComponent.OnMovePerformed -= HandleMovePressed;
+        }
     }
     
     // if Input detected, process the event

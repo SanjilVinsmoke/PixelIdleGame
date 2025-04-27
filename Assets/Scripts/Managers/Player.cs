@@ -1,137 +1,88 @@
-﻿using UnityEngine;
+using UnityEngine;
 using Component;
 using Component.Interfaces;
-using Unity.VisualScripting;
-using UnityEngine.InputSystem;
-using Utils; 
+using Utils;                         // For AutoRequireAttribute
+
 public enum PlayerEvent
 {
     Idle,
-    Attack,
     Move,
     Jump,
-    Die,
+    Attack,
+    Dash,
     Hit,
+    Die
 }
 
-public class Player : MonoBehaviour, IDamageable
+public class Player : MonoBehaviour
 {
-    [AutoRequire]
-    public HealthComponent healthComponent;
-
-    [AutoRequire]
-    public AttackComponent attackComponent;
-    
-    [AutoRequire]
-    public AnimationComponent animationComponent;
-    
-    [AutoRequire]
-    public MoveComponent movementComponent;
-    [AutoRequire]
-    public JumpComponent jumpComponent;
-    
-    [AutoRequire]
-    public InputComponent inputComponent;
+    [Header("Player Settings")]
+    [SerializeField] public  bool debugMode = false; // Enable debug mode for state machine
+    // Auto-injected components
+    [AutoRequire] public InputComponent     inputComponent;
+    [AutoRequire] public MoveComponent      movementComponent;
+    [AutoRequire] public JumpComponent      jumpComponent;
+    [AutoRequire] public AttackComponent    attackComponent;
+    [AutoRequire] public DashComponent      dashComponent;
+    [AutoRequire] public HealthComponent    healthComponent;
+    [AutoRequire] public AnimationComponent animationComponent;
 
     private StateMachine<Player, PlayerEvent> stateMachine;
-    public delegate void ButtonPressedHandler();
-    public delegate void MoveButtonPressedHandler(InputAction.CallbackContext context);
-    public event ButtonPressedHandler OnJumpButtonPressed;
-    public event ButtonPressedHandler OnAttackButtonPressed;
-    public event MoveButtonPressedHandler OnMoveButtonPressed;
 
     private void Awake()
     {
         ComponentInjector.InjectComponents(this);
-        StateMachine<Player,PlayerEvent>.DebugMode = true;
-        
-        // Register input events with named methods for proper cleanup
-        inputComponent.OnFirePerformed += HandleFireInput;
-        inputComponent.OnJumpPerformed += HandleJumpInput;
-        inputComponent.OnMovePerformed += HandleMoveInput;
-        
-        // Connect jump component landing event
-        jumpComponent.OnLanded += HandleJumpLanding;
+        StateMachine<Player, PlayerEvent>.DebugMode = debugMode;
     }
-    
-    private void HandleFireInput() => OnAttackButtonPressed?.Invoke();
-    private void HandleJumpInput() => OnJumpButtonPressed?.Invoke();
-    private void HandleMoveInput(InputAction.CallbackContext context) => OnMoveButtonPressed?.Invoke(context);
-    
-    private void HandleJumpLanding()
-    {
-        // Only transition to idle if we're currently in jump state
-        if (stateMachine.CurrentState is PlayerJumpState)
-            stateMachine.ProcessEvent(PlayerEvent.Idle);
-    }
- 
+
     private void Start()
     {
-        // Here we configure the event mappings. These mappings are provided externally.
-        stateMachine = new StateMachine<Player,PlayerEvent>(this, sm =>
+        // Configure state machine event-to-state mappings
+        stateMachine = new StateMachine<Player, PlayerEvent>(this, sm =>
         {
-            sm.AddEventMapping(PlayerEvent.Idle,    () => sm.ChangeState<PlayerIdleState>());
-            sm.AddEventMapping(PlayerEvent.Attack, () => sm.ChangeState<PlayerAttackState>());
+            sm.AddEventMapping(PlayerEvent.Idle,   () => sm.ChangeState<PlayerIdleState>());
             sm.AddEventMapping(PlayerEvent.Move,   () => sm.ChangeState<PlayerMoveState>());
             sm.AddEventMapping(PlayerEvent.Jump,   () => sm.ChangeState<PlayerJumpState>());
-            sm.AddEventMapping(PlayerEvent.Hit,    () => sm.ChangeState<PlayerHitState>());
-          
+            sm.AddEventMapping(PlayerEvent.Attack, () => sm.ChangeState<PlayerAttackState>());
+            sm.AddEventMapping(PlayerEvent.Dash,   () => sm.ChangeState<PlayerDashState>());
+            //sm.AddEventMapping(PlayerEvent.Hit,    () => sm.ChangeState<PlayerHitState>());
+            //sm.AddEventMapping(PlayerEvent.Die,    () => sm.ChangeState<PlayerDieState>());
         });
 
-        // Register states
+        // Register state instances
         stateMachine.AddState(new PlayerIdleState());
-        stateMachine.AddState(new PlayerAttackState());
-        stateMachine.AddState(new PlayerHitState());
         stateMachine.AddState(new PlayerMoveState());
         stateMachine.AddState(new PlayerJumpState());
-        
+        stateMachine.AddState(new PlayerAttackState());
+        stateMachine.AddState(new PlayerDashState());
+      //  stateMachine.AddState(new PlayerHitState());
+       // stateMachine.AddState(new PlayerDieState());
+
+        // Start in Idle
         stateMachine.SetInitialState<PlayerIdleState>();
     }
 
     private void Update()
     {
-        stateMachine.Update();
-
+        // check debug mode
         
+        stateMachine.Update();
     }
 
-    private void OnDestroy()
+    private void FixedUpdate()
     {
-        // Clean up event subscriptions to prevent memory leaks
-        if (inputComponent != null)
-        {
-            inputComponent.OnFirePerformed -= HandleFireInput;
-            inputComponent.OnJumpPerformed -= HandleJumpInput;
-            inputComponent.OnMovePerformed -= HandleMoveInput;
-        }
-        
-        if (jumpComponent != null)
-        {
-            jumpComponent.OnLanded -= HandleJumpLanding;
-        }
-        
-        stateMachine.Dispose();
+        stateMachine.FixedUpdate();
     }
 
     public void TakeDamage(float damage)
     {
         healthComponent.TakeDamage(damage);
-        stateMachine.ProcessEvent(PlayerEvent.Hit);
 
-    }
-    
-    public void OnHit()
-    {
- 
     }
 
     public void Die()
     {
-        stateMachine.ProcessEvent(PlayerEvent.Die);
+        Debug.Log("Player died");
+        // Optionally play death animation, disable controls, etc.
     }
-    
-  
-    
-    
-    
 }

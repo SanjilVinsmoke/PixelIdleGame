@@ -1,89 +1,78 @@
-﻿using Constant;
+using Constant;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using Utils;
+using UnityEngine.InputSystem;
 
-[StateDescription("Player is jumping")]
 [StateDebugColor(StateDebugColorAttribute.UnityColor.Cyan)]
+[StateDescription("Handles player jumping: initial, double-jump, coyote time, in-air control, and landing.")]
 public class PlayerJumpState : BaseState<Player, PlayerEvent>
 {
-    private float jumpStartTime;
-    private float maxJumpDuration = 1.0f;
-    private Vector2 moveInput;
-    private bool hasLanded = false;
+    private float horizontalInput;
+    private const float DeadZone = 0.1f;
 
     public override void Enter()
     {
         base.Enter();
-        jumpStartTime = Time.time;
-        hasLanded = false;
-        
-        // Cache the current movement input on entry
-        if (owner.inputComponent != null)
-            moveInput = owner.inputComponent.MoveVector;
-        
-        // Register event handlers
-        owner.OnAttackButtonPressed += HandleAttackPressed;
-        owner.OnJumpButtonPressed += HandleJumpPressed;
-        
-        if (owner.jumpComponent != null)
-            owner.jumpComponent.HandleJumpInput();
-        
-        if (owner.animationComponent != null)
-            owner.animationComponent.PlayAnimation(AnimationName.PlayerAnimationNames.JUMP);
-    }
-    
-    public override void Update()
-    {
-        base.Update();
 
-    
-        // Only handle non-physics updates here
-        if (Time.time - jumpStartTime > maxJumpDuration && !hasLanded)
-        {
-            stateMachine.ProcessEvent(PlayerEvent.Idle);
-        }
+        // Perform initial jump
+        owner.jumpComponent.Jump();
+
+        // Capture input for air control
+        horizontalInput = owner.inputComponent.MoveVector.x;
+
+        // Subscribe to input events
+        owner.inputComponent.OnMovePerformed   += HandleMove;
+        owner.inputComponent.OnJumpPerformed   += HandleJumpPressed;
+        owner.inputComponent.OnJumpCanceled    += HandleJumpCanceled;
+        // Subscribe to landing event
+        owner.jumpComponent.OnLanded           += HandleLanded;
+
+        owner.animationComponent?.PlayAnimation(AnimationName.PlayerAnimationNames.JUMP);
     }
-    
+
     public override void FixedUpdate()
     {
         base.FixedUpdate();
-        
-        // Handle physics-based movement in FixedUpdate
-        if (owner.movementComponent != null && owner.inputComponent != null)
-        {
-            Vector2 currentInput = owner.inputComponent.MoveVector;
-            moveInput = currentInput;
-            owner.movementComponent.Move(currentInput.x * 0.8f);
-        }
+
+        // Move player horizontally while in air
+        owner.movementComponent.Move(horizontalInput);
     }
-    
-    private void HandleAttackPressed()
-    {
-        stateMachine.ProcessEvent(PlayerEvent.Attack);
-    }
-    
-    private void HandleJumpPressed()
-    {
-        // Allow double jump if component supports it
-        if (owner.jumpComponent != null)
-            owner.jumpComponent.HandleJumpInput();
-    }
-    
+
     public override void Exit()
     {
-        // Determine proper transition state based on cached movement
-        if (moveInput.magnitude > 0.1f)
-        {
-            // If we still have movement input when exiting jump, 
-            // directly go to move state next time
-            owner.inputComponent.lastMoveDirection = moveInput;
-        }
-        
-        // Unregister events to prevent memory leaks
-        owner.OnAttackButtonPressed -= HandleAttackPressed;
-        owner.OnJumpButtonPressed -= HandleJumpPressed;
-        
         base.Exit();
+
+        // Unsubscribe from input events
+        owner.inputComponent.OnMovePerformed   -= HandleMove;
+        owner.inputComponent.OnJumpPerformed   -= HandleJumpPressed;
+        owner.inputComponent.OnJumpCanceled    -= HandleJumpCanceled;
+        owner.jumpComponent.OnLanded           -= HandleLanded;
+    }
+
+    private void HandleMove(InputAction.CallbackContext ctx)
+    {
+        if (ctx.performed)
+            horizontalInput = ctx.ReadValue<Vector2>().x;
+        else if (ctx.canceled)
+            horizontalInput = 0f;
+    }
+
+    private void HandleJumpPressed()
+    {
+        owner.jumpComponent.Jump();
+    }
+
+    private void HandleJumpCanceled()
+    {
+        owner.jumpComponent.EndJump();
+    }
+
+    private void HandleLanded()
+    {
+        // When player lands, transition to Move or Idle based on input
+        if (Mathf.Abs(owner.inputComponent.MoveVector.x) > DeadZone)
+            stateMachine.ProcessEvent(PlayerEvent.Move);
+        else
+            stateMachine.ProcessEvent(PlayerEvent.Idle);
     }
 }
