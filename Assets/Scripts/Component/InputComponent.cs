@@ -80,9 +80,9 @@ using System;
         {
 
             if (context.performed)
-            {
                 OnJumpPerformed?.Invoke();
-            }
+            else if (context.canceled)
+                OnJumpCanceled?.Invoke();  
         }
 
         // Callback for the Dash action
@@ -100,13 +100,7 @@ using System;
                 OnInteractPerformed?.Invoke();
             }
         }
-        public void OnCancelJump(InputAction.CallbackContext context)
-        {
-            if (context.canceled)
-            {
-                OnJumpCanceled?.Invoke();
-            }
-        }
+  
         
         
     }

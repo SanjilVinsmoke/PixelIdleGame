@@ -247,7 +247,7 @@ Transform:
   m_GameObject: {fileID: 778239261}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.97, y: -0.24, z: 0}
+  m_LocalPosition: {x: 6.36, y: 3.64, z: 0}
   m_LocalScale: {x: 6.2881703, y: 0.65102845, z: 0.65102845}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -381,8 +381,8 @@ Transform:
   m_GameObject: {fileID: 835066991}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 9.93, y: -4.19, z: 0}
-  m_LocalScale: {x: 6.2881703, y: 0.65102845, z: 0.65102845}
+  m_LocalPosition: {x: 13.4098, y: -6.5584, z: 0}
+  m_LocalScale: {x: 13.247918, y: 5.3878465, z: 0.65102845}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -649,8 +649,8 @@ Transform:
   m_GameObject: {fileID: 1873319723}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.060000002, y: -4.06, z: 0}
-  m_LocalScale: {x: 12.904191, y: 1.0354, z: 1.0354}
+  m_LocalPosition: {x: -4.6756, y: -5.2916, z: 0}
+  m_LocalScale: {x: 22.135849, y: 3.4985132, z: 1.0354}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -891,11 +891,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 930578344843863957, guid: 29305b0961e869a4ca7e3fb1311960c7, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.14
+      value: -5.78
       objectReference: {fileID: 0}
     - target: {fileID: 930578344843863957, guid: 29305b0961e869a4ca7e3fb1311960c7, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -3.03
+      value: 2.89
       objectReference: {fileID: 0}
     - target: {fileID: 930578344843863957, guid: 29305b0961e869a4ca7e3fb1311960c7, type: 3}
       propertyPath: m_LocalPosition.z
@@ -947,7 +947,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6700351886249276975, guid: 29305b0961e869a4ca7e3fb1311960c7, type: 3}
       propertyPath: maxExtraJumps
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6700351886249276975, guid: 29305b0961e869a4ca7e3fb1311960c7, type: 3}
       propertyPath: maxJumpHeight

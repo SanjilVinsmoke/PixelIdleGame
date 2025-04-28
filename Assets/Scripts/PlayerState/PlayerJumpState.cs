@@ -9,11 +9,12 @@ public class PlayerJumpState : BaseState<Player, PlayerEvent>
 {
     private float horizontalInput;
     private const float DeadZone = 0.1f;
-
+    private Rigidbody2D rb;
     public override void Enter()
     {
         base.Enter();
 
+        rb = owner.GetComponent<Rigidbody2D>();
         // Perform initial jump
         owner.jumpComponent.Jump();
 
@@ -33,11 +34,14 @@ public class PlayerJumpState : BaseState<Player, PlayerEvent>
     public override void FixedUpdate()
     {
         base.FixedUpdate();
-
-        // Move player horizontally while in air
         owner.movementComponent.Move(horizontalInput);
-    }
 
+        // **If we start falling, switch to FallState**
+        if (rb.linearVelocity.y < 0f)
+        {
+            stateMachine.ProcessEvent(PlayerEvent.Fall);
+        }
+    }
     public override void Exit()
     {
         base.Exit();

@@ -8,8 +8,10 @@ public enum PlayerEvent
     Idle,
     Move,
     Jump,
+    Fall,
     Attack,
     Dash,
+    
     Hit,
     Die
 }
@@ -45,6 +47,7 @@ public class Player : MonoBehaviour
             sm.AddEventMapping(PlayerEvent.Jump,   () => sm.ChangeState<PlayerJumpState>());
             sm.AddEventMapping(PlayerEvent.Attack, () => sm.ChangeState<PlayerAttackState>());
             sm.AddEventMapping(PlayerEvent.Dash,   () => sm.ChangeState<PlayerDashState>());
+            sm.AddEventMapping(PlayerEvent.Fall,   () => sm.ChangeState<PlayerFallState>());
             //sm.AddEventMapping(PlayerEvent.Hit,    () => sm.ChangeState<PlayerHitState>());
             //sm.AddEventMapping(PlayerEvent.Die,    () => sm.ChangeState<PlayerDieState>());
         });
@@ -55,6 +58,7 @@ public class Player : MonoBehaviour
         stateMachine.AddState(new PlayerJumpState());
         stateMachine.AddState(new PlayerAttackState());
         stateMachine.AddState(new PlayerDashState());
+        stateMachine.AddState(new PlayerFallState());
       //  stateMachine.AddState(new PlayerHitState());
        // stateMachine.AddState(new PlayerDieState());
 

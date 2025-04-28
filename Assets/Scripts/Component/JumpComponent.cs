@@ -31,7 +31,7 @@ public class JumpComponent : MonoBehaviour
 
     // runtime
     private Rigidbody2D rb;
-    private bool          isGrounded;
+    public bool          isGrounded;
     private bool          wasGroundedLastFrame;
     private int           extraJumps;
     private float         timeSinceGrounded = Mathf.Infinity;

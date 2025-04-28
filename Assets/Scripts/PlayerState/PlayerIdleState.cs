@@ -9,8 +9,10 @@ using Utils;
 [StateDebugColor(StateDebugColorAttribute.UnityColor.Green)]
 public class PlayerIdleState : BaseState<Player, PlayerEvent>
 {
+    private Rigidbody2D rb;
     public override void Enter()
     {
+        rb = owner.GetComponent<Rigidbody2D>();
         base.Enter();
         
         // Register event handlers from InputComponent
@@ -60,21 +62,15 @@ public class PlayerIdleState : BaseState<Player, PlayerEvent>
     }
     
     // if Input detected, process the event
-    
-    
-    public override void Update()
+    public override void FixedUpdate()
     {
-        base.Update();
+        base.FixedUpdate();
 
-        // Check for input to attack.
-       
-    
-       
-
-        // // Check if the player's health is depleted.
-        // if (owner.healthComponent != null && owner.healthComponent.IsDead)
-        // {
-        //     stateMachine.ProcessEvent(PlayerEvent.Die);
-        // }
+        // only transition to Fall if OFF the ground and falling fast enough
+        if (!owner.jumpComponent.isGrounded && rb.linearVelocity.y < -0.1f)
+            stateMachine.ProcessEvent(PlayerEvent.Fall);
     }
+
+    
+   
 }

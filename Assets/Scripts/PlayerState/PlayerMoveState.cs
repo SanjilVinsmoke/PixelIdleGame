@@ -12,9 +12,10 @@ public class PlayerMoveState : BaseState<Player, PlayerEvent>
 {
     private float horizontalInput;
     private const float DeadZone = 0.1f;
-
+    private Rigidbody2D rb;
     public override void Enter()
     {
+        rb = owner.GetComponent<Rigidbody2D>();
         base.Enter();
     horizontalInput = owner.inputComponent.MoveVector.x;
         if (Mathf.Abs(horizontalInput) < DeadZone)
@@ -64,6 +65,15 @@ public class PlayerMoveState : BaseState<Player, PlayerEvent>
             horizontalInput = 0f;
             stateMachine.ProcessEvent(PlayerEvent.Idle);
         }
+    }
+
+    public override void FixedUpdate()
+    {
+        base.FixedUpdate();
+
+        // only transition to Fall if OFF the ground and falling fast enough
+        if (!owner.jumpComponent.isGrounded && rb.linearVelocity.y < -0.1f)
+            stateMachine.ProcessEvent(PlayerEvent.Fall);
     }
 
     private void HandleJumpPressed()   => stateMachine.ProcessEvent(PlayerEvent.Jump);
