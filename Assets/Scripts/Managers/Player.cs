@@ -30,6 +30,9 @@ public class Player : MonoBehaviour
     [AutoRequire] public AnimationComponent animationComponent;
 
     private StateMachine<Player, PlayerEvent> stateMachine;
+    
+    // Current State
+    public System.Type CurrentState => stateMachine.CurrentState?.GetType();
 
     private void Awake()
     {
@@ -71,6 +74,7 @@ public class Player : MonoBehaviour
         // check debug mode
         
         stateMachine.Update();
+        Debug.Log($"Current State: {CurrentState}");
     }
 
     private void FixedUpdate()

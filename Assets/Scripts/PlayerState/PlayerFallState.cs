@@ -21,6 +21,7 @@ public class PlayerFallState : BaseState<Player, PlayerEvent>
         // Listen for the JumpPerformed too, so you can double-jump in FallState:
         owner.inputComponent.OnJumpPerformed += HandleJumpPressed;
         owner.inputComponent.OnJumpCanceled  += HandleJumpCanceled;
+        owner.inputComponent.OnDashPerformed  += HandleDashPressed;
         owner.jumpComponent.OnLanded        += HandleLanded;
 
         owner.animationComponent?.PlayAnimation(AnimationName.PlayerAnimationNames.FALL);
@@ -76,5 +77,14 @@ public class PlayerFallState : BaseState<Player, PlayerEvent>
             stateMachine.ProcessEvent(PlayerEvent.Move);
         else
             stateMachine.ProcessEvent(PlayerEvent.Idle);
+    }
+   private void HandleDashPressed()
+    {
+        if (owner.CurrentState == typeof(PlayerJumpState) || owner.CurrentState == typeof(PlayerFallState))
+        {
+            // If in Jump or Fall state, process the dash event
+            stateMachine.ProcessEvent(PlayerEvent.Dash);
+        }
+       
     }
 }

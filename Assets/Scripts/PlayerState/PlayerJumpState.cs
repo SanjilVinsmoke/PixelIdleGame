@@ -25,6 +25,7 @@ public class PlayerJumpState : BaseState<Player, PlayerEvent>
         owner.inputComponent.OnMovePerformed   += HandleMove;
         owner.inputComponent.OnJumpPerformed   += HandleJumpPressed;
         owner.inputComponent.OnJumpCanceled    += HandleJumpCanceled;
+        owner.inputComponent.OnDashPerformed   += HandleDashPressed;
         // Subscribe to landing event
         owner.jumpComponent.OnLanded           += HandleLanded;
 
@@ -78,5 +79,16 @@ public class PlayerJumpState : BaseState<Player, PlayerEvent>
             stateMachine.ProcessEvent(PlayerEvent.Move);
         else
             stateMachine.ProcessEvent(PlayerEvent.Idle);
+    }
+    
+    private void HandleDashPressed()
+    {
+        if (owner.CurrentState == typeof(PlayerJumpState) || owner.CurrentState == typeof(PlayerFallState))
+        {
+            // If in Jump or Fall state, process the dash event
+            stateMachine.ProcessEvent(PlayerEvent.Dash);
+        }
+        
+       
     }
 }

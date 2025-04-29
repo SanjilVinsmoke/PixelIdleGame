@@ -1,78 +1,116 @@
-using UnityEngine;
+using System;
 using System.Collections;
+using UnityEngine;
 
+[RequireComponent(typeof(Rigidbody2D))]
 public class DashComponent : MonoBehaviour
 {
     [Header("Dash Settings")]
-    [SerializeField] private float dashForce = 15f;
-    [SerializeField] private float dashDuration = 0.2f;
+    [Tooltip("How fast the dash moves (units/sec)")]
+    [SerializeField] private float dashSpeed = 15f;
+    [Tooltip("How far the dash travels (units)")]
+    [SerializeField] private float dashDistance = 5f;
+    [Tooltip("Cooldown time between dashes (sec)")]
     [SerializeField] private float dashCooldown = 1f;
-    [SerializeField] private bool ignoreGravityDuringDash = true;
+    [Tooltip("How many air-dashes you get")]
+    [SerializeField] private int maxAirDashes = 1;
+    [Tooltip("Disable gravity during dash?")]
+    [SerializeField] private bool disableGravityDuringDash = true;
 
-    private Rigidbody2D rb;
-    private MoveComponent moveComponent; // Assuming MoveComponent handles facing direction
-    private float lastDashTime = Mathf.NegativeInfinity;
-    private bool isDashing = false;
-    private float originalGravityScale;
+    private Rigidbody2D    rb;
+    private JumpComponent  jumpComp;
+    private float          lastDashTime = -Mathf.Infinity;
+    private int            airDashesRemaining;
+    private Coroutine dashCoroutine;
 
-    public bool IsDashing => isDashing;
-    public bool CanDash => Time.time >= lastDashTime + dashCooldown && !isDashing;
+    public bool IsDashing { get; private set; }
+    public event Action OnDashFinished;
 
-    void Awake()
+    private void Awake()
     {
-        rb = GetComponent<Rigidbody2D>();
-        moveComponent = GetComponent<MoveComponent>();
-        if (rb == null)
-            Debug.LogError($"[DashComponent] No Rigidbody found on {gameObject.name}");
-        if (moveComponent == null)
-            Debug.LogWarning($"[DashComponent] No MoveComponent found on {gameObject.name}. Directional dash might not work as expected.");
-        originalGravityScale = rb.gravityScale;
+        rb                 = GetComponent<Rigidbody2D>();
+        jumpComp           = GetComponent<JumpComponent>();
+        airDashesRemaining = maxAirDashes;
+
+        // reset air-dashes when you land
+        if (jumpComp != null)
+        {
+            jumpComp.OnLanded += () => airDashesRemaining = maxAirDashes;
+            jumpComp.OnLanded += HandleLandedDuringDash; // Add this line
+        }
     }
 
-    public void PerformDash()
+    /// <summary>
+    /// Returns true if cooldown is ready and you have any dash charges (ground or air).
+    /// </summary>
+    public bool CanDash()
     {
-        if (!CanDash || rb == null)
-            return;
-
-        StartCoroutine(DashCoroutine());
+        bool offCooldown = Time.time >= lastDashTime + dashCooldown;
+        bool inAir       = jumpComp != null && !jumpComp.isGrounded;
+        bool hasAirDash  = airDashesRemaining > 0;
+        return offCooldown && inAir && hasAirDash;
     }
 
-    private IEnumerator DashCoroutine()
+    /// <summary>
+    /// Start a dash in the given world‐space direction.  
+    /// If direction is zero, will dash in your current facing (x‐scale).
+    /// </summary>
+    private bool wasGroundedAtDashStart = false;
+    private bool dashInterrupted = false;
+
+    public void Dash(Vector2 direction)
     {
-        isDashing = true;
+        if (!CanDash()) return;
         lastDashTime = Time.time;
+    
+        // consume an air-dash if not grounded
+        if (jumpComp != null && !jumpComp.isGrounded)
+            airDashesRemaining--;
 
-        float dashDirection = transform.localScale.x > 0 ? 1f : -1f; // Use localScale for direction
-        Vector2 dashVelocity = new Vector2(dashDirection * dashForce, 0f);
+        wasGroundedAtDashStart = jumpComp != null && jumpComp.isGrounded;
+        dashInterrupted = false;
 
-        if (ignoreGravityDuringDash)
-        {
-            rb.gravityScale = 0f;
-        }
-        rb.linearVelocity = dashVelocity; // Use velocity for instant dash
-
-        yield return new WaitForSeconds(dashDuration);
-
-        rb.linearVelocity = Vector2.zero; // Stop dash abruptly or apply friction?
-        if (ignoreGravityDuringDash)
-        {
-            rb.gravityScale = originalGravityScale;
-        }
-        isDashing = false;
+        if (dashCoroutine != null)
+            StopCoroutine(dashCoroutine);
+        dashCoroutine = StartCoroutine(DashRoutine(direction));
     }
 
-    // Optional: Method to cancel dash early if needed
-    public void CancelDash()
+    private void HandleLandedDuringDash()
     {
-        if (isDashing)
+        // Only interrupt dash early if it was an air dash
+        if (IsDashing && !wasGroundedAtDashStart)
         {
-            StopCoroutine(nameof(DashCoroutine));
-            rb.linearVelocity = Vector2.zero;
-            if (ignoreGravityDuringDash)
-            {
-                 rb.gravityScale = originalGravityScale;
-            }
-            isDashing = false;
+            dashInterrupted = true;
         }
+    }
+
+    private IEnumerator DashRoutine(Vector2 dir)
+    {
+        IsDashing = true;
+        float origGravity = rb.gravityScale;
+        if (disableGravityDuringDash) rb.gravityScale = 0f;
+
+        // choose default if no input
+        if (dir.sqrMagnitude < 0.01f)
+            dir = new Vector2(Mathf.Sign(transform.localScale.x), 0f);
+        dir.Normalize();
+
+        // dash for exactly distance/speed seconds
+        float duration = dashDistance / dashSpeed;
+        float endTime  = Time.time + duration;
+        while (Time.time < endTime && !dashInterrupted)
+        {
+            rb.linearVelocity = dir * dashSpeed;
+            yield return null;
+            // Only break if this was an air dash and we landed
+            if (!wasGroundedAtDashStart && jumpComp != null && jumpComp.isGrounded)
+                break;
+        }
+
+        // restore
+        if (disableGravityDuringDash) rb.gravityScale = origGravity;
+        rb.linearVelocity = Vector2.zero; // Stop sliding
+        IsDashing = false;
+        OnDashFinished?.Invoke();
     }
 }

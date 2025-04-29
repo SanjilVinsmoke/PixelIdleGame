@@ -24,7 +24,6 @@ public class PlayerMoveState : BaseState<Player, PlayerEvent>
         owner.inputComponent.OnMovePerformed   += HandleMovePerformed;
         owner.inputComponent.OnJumpPerformed   += HandleJumpPressed;
         owner.inputComponent.OnAttackPerformed += HandleAttackPressed;
-        owner.inputComponent.OnDashPerformed   += HandleDashPressed;
 
         // Play run animation if available
         owner.animationComponent?.PlayAnimation(AnimationName.PlayerAnimationNames.RUN);
@@ -46,7 +45,6 @@ public class PlayerMoveState : BaseState<Player, PlayerEvent>
         owner.inputComponent.OnMovePerformed   -= HandleMovePerformed;
         owner.inputComponent.OnJumpPerformed   -= HandleJumpPressed;
         owner.inputComponent.OnAttackPerformed -= HandleAttackPressed;
-        owner.inputComponent.OnDashPerformed   -= HandleDashPressed;
 
         owner.movementComponent.Move(0f);
     }
@@ -78,5 +76,5 @@ public class PlayerMoveState : BaseState<Player, PlayerEvent>
 
     private void HandleJumpPressed()   => stateMachine.ProcessEvent(PlayerEvent.Jump);
     private void HandleAttackPressed() => stateMachine.ProcessEvent(PlayerEvent.Attack);
-    private void HandleDashPressed()   => stateMachine.ProcessEvent(PlayerEvent.Dash);
+  
 }
