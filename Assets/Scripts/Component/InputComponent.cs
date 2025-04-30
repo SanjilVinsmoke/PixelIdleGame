@@ -100,6 +100,15 @@ using System;
                 OnInteractPerformed?.Invoke();
             }
         }
+        
+        public void DisableInput()
+        {
+            inputActions.Disable();
+        }
+        public void EnableInput()
+        {
+            inputActions.Enable();
+        }
   
         
         

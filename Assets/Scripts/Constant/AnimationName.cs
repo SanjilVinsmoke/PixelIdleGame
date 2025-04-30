@@ -10,6 +10,7 @@
             public static readonly string RUN = "Run";
             public static readonly string JUMP = "Jump";
             public static readonly string ATTACK = "Attack";
+            public static  readonly string DEATH = "Death";
             public static readonly string FALL = "Fall";
             public static readonly string ROLL = "Roll";
             public static readonly string HIT = "Hit";

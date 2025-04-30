@@ -13,7 +13,7 @@ public enum PlayerEvent
     Dash,
     Roll,
     Hit,
-    Die
+    Death
 }
 
 public class Player : MonoBehaviour
