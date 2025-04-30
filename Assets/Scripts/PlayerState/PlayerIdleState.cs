@@ -21,6 +21,7 @@ public class PlayerIdleState : BaseState<Player, PlayerEvent>
             owner.inputComponent.OnAttackPerformed += HandleAttackPressed;
             owner.inputComponent.OnJumpPerformed += HandleJumpPressed;
             owner.inputComponent.OnMovePerformed += HandleMovePressed;
+            owner.inputComponent.OnDashPerformed += HandleRollPressed;
         }
         
         // Play the idle animation if an animator exists
@@ -71,7 +72,13 @@ public class PlayerIdleState : BaseState<Player, PlayerEvent>
             stateMachine.ProcessEvent(PlayerEvent.Fall);
     }
 
-    
+    private void HandleRollPressed()
+    { 
+        if (owner.jumpComponent.isGrounded && owner.rollComponent.CanRoll() && owner.CurrentState == typeof(PlayerIdleState))
+        {
+            stateMachine.ProcessEvent(PlayerEvent.Roll);
+        }
+    }
     
    
 }

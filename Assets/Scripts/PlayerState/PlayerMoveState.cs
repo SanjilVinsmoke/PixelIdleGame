@@ -1,6 +1,7 @@
 using Constant;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Rendering.VirtualTexturing;
 using Utils;
 
 /// <summary>
@@ -24,6 +25,7 @@ public class PlayerMoveState : BaseState<Player, PlayerEvent>
         owner.inputComponent.OnMovePerformed   += HandleMovePerformed;
         owner.inputComponent.OnJumpPerformed   += HandleJumpPressed;
         owner.inputComponent.OnAttackPerformed += HandleAttackPressed;
+        owner.inputComponent.OnDashPerformed   += HandleRollPressed;
 
         // Play run animation if available
         owner.animationComponent?.PlayAnimation(AnimationName.PlayerAnimationNames.RUN);
@@ -45,6 +47,7 @@ public class PlayerMoveState : BaseState<Player, PlayerEvent>
         owner.inputComponent.OnMovePerformed   -= HandleMovePerformed;
         owner.inputComponent.OnJumpPerformed   -= HandleJumpPressed;
         owner.inputComponent.OnAttackPerformed -= HandleAttackPressed;
+        
 
         owner.movementComponent.Move(0f);
     }
@@ -76,5 +79,11 @@ public class PlayerMoveState : BaseState<Player, PlayerEvent>
 
     private void HandleJumpPressed()   => stateMachine.ProcessEvent(PlayerEvent.Jump);
     private void HandleAttackPressed() => stateMachine.ProcessEvent(PlayerEvent.Attack);
-  
+    private void HandleRollPressed()
+    { 
+        if (owner.jumpComponent.isGrounded && owner.rollComponent.CanRoll() && owner.CurrentState == typeof(PlayerMoveState))
+        {
+            stateMachine.ProcessEvent(PlayerEvent.Roll);
+        }
+    }
 }

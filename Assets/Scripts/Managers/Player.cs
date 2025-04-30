@@ -11,7 +11,7 @@ public enum PlayerEvent
     Fall,
     Attack,
     Dash,
-    
+    Roll,
     Hit,
     Die
 }
@@ -28,6 +28,7 @@ public class Player : MonoBehaviour
     [AutoRequire] public DashComponent      dashComponent;
     [AutoRequire] public HealthComponent    healthComponent;
     [AutoRequire] public AnimationComponent animationComponent;
+    [AutoRequire] public RollComponent      rollComponent;
 
     private StateMachine<Player, PlayerEvent> stateMachine;
     
@@ -51,6 +52,7 @@ public class Player : MonoBehaviour
             sm.AddEventMapping(PlayerEvent.Attack, () => sm.ChangeState<PlayerAttackState>());
             sm.AddEventMapping(PlayerEvent.Dash,   () => sm.ChangeState<PlayerDashState>());
             sm.AddEventMapping(PlayerEvent.Fall,   () => sm.ChangeState<PlayerFallState>());
+            sm.AddEventMapping(PlayerEvent.Roll,   () => sm.ChangeState<PlayerRollState>());
             //sm.AddEventMapping(PlayerEvent.Hit,    () => sm.ChangeState<PlayerHitState>());
             //sm.AddEventMapping(PlayerEvent.Die,    () => sm.ChangeState<PlayerDieState>());
         });
@@ -62,6 +64,7 @@ public class Player : MonoBehaviour
         stateMachine.AddState(new PlayerAttackState());
         stateMachine.AddState(new PlayerDashState());
         stateMachine.AddState(new PlayerFallState());
+        stateMachine.AddState(new PlayerRollState());
       //  stateMachine.AddState(new PlayerHitState());
        // stateMachine.AddState(new PlayerDieState());
 
