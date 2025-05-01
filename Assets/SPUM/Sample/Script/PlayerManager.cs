@@ -32,7 +32,12 @@ public class PlayerManager : MonoBehaviour
         UHD
     }
     public ScreenShotSize _screenShotSize = ScreenShotSize.HD;
-    
+
+    void Start()
+    {
+        if(_savedUnitList.Count.Equals(0) || _playerList.Count.Equals(0))
+            GetPlayerList();
+    }
     // Update is called once per frame
     void Update()
     {

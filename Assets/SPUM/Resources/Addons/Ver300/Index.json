@@ -2,8 +2,54 @@
     "Name": "Ver300",
     "Path": "Assets/SPUM/Resources/Addons",
     "Version": "",
-    "CreationDate": "2024-09-11 21:39:04",
-    "SpumAnimationData": [],
+    "CreationDate": "2024-09-20 16:37:48",
+    "SpumAnimationData": [
+        {
+            "index": 0,
+            "Name": "LongSpear_idle.anim",
+            "StateType": "IDLE",
+            "ClipPath": "Addons/Ver300/0_Unit/1_Animation/00_Idle/LongSpear_idle.anim",
+            "HasData": false,
+            "UnitType": "Unit",
+            "SubCategory": ""
+        },
+        {
+            "index": 0,
+            "Name": "LongSpear_Walk.anim",
+            "StateType": "MOVE",
+            "ClipPath": "Addons/Ver300/0_Unit/1_Animation/01_Move/LongSpear_Walk.anim",
+            "HasData": false,
+            "UnitType": "Unit",
+            "SubCategory": ""
+        },
+        {
+            "index": 0,
+            "Name": "AxeAttack_1.anim",
+            "StateType": "ATTACK",
+            "ClipPath": "Addons/Ver300/0_Unit/1_Animation/02_Attack/00_MeleeAttack/AxeAttack_1.anim",
+            "HasData": false,
+            "UnitType": "Unit",
+            "SubCategory": "MeleeAttack"
+        },
+        {
+            "index": 0,
+            "Name": "LongSpearAttack_1.anim",
+            "StateType": "ATTACK",
+            "ClipPath": "Addons/Ver300/0_Unit/1_Animation/02_Attack/00_MeleeAttack/LongSpearAttack_1.anim",
+            "HasData": false,
+            "UnitType": "Unit",
+            "SubCategory": "MeleeAttack"
+        },
+        {
+            "index": 0,
+            "Name": "ShotSwordAttack_1.anim",
+            "StateType": "ATTACK",
+            "ClipPath": "Addons/Ver300/0_Unit/1_Animation/02_Attack/00_MeleeAttack/ShotSwordAttack_1.anim",
+            "HasData": false,
+            "UnitType": "Unit",
+            "SubCategory": "MeleeAttack"
+        }
+    ],
     "SpumTextureData": [
         {
             "Name": "New_Hair_01",

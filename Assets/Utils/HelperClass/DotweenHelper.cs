@@ -148,6 +148,15 @@ public static class DOTweenHelper
         return camera.DOFieldOfView(endValue, duration);
     }
     
+    
+    //<summary>
+    // Shakes the transform
+    //</summary>
+    public static void Shake(Transform transform)
+    {
+        transform.DOShakePosition(0.5f, 0.5f, 10, 90, false, true);
+    }
+    
     /// <summary>
     /// Smoothly changes orthographic size (for 2D cameras)
     /// </summary>
