@@ -5826,6 +5826,10 @@ PrefabInstance:
       propertyPath: debugMode
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3629556047931908037, guid: 29305b0961e869a4ca7e3fb1311960c7, type: 3}
+      propertyPath: dustEffectPrefab
+      value: 
+      objectReference: {fileID: 420742349}
     - target: {fileID: 5793799374360232608, guid: 29305b0961e869a4ca7e3fb1311960c7, type: 3}
       propertyPath: m_BodyType
       value: 0

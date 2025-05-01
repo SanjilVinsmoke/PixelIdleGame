@@ -19,7 +19,11 @@ public enum PlayerEvent
 public class Player : MonoBehaviour
 {
     [Header("Player Settings")]
-    [SerializeField] public  bool debugMode = false; // Enable debug mode for state machine
+    [SerializeField] public  bool debugMode = false;
+
+     public ParticleSystem dustEffectPrefab;
+    
+    // Enable debug mode for state machine
     // Auto-injected components
     [AutoRequire] public InputComponent     inputComponent;
     [AutoRequire] public MoveComponent      movementComponent;
@@ -31,6 +35,8 @@ public class Player : MonoBehaviour
     [AutoRequire] public RollComponent      rollComponent;
 
     private StateMachine<Player, PlayerEvent> stateMachine;
+    
+    
     
     // Current State
     public System.Type CurrentState => stateMachine.CurrentState?.GetType();

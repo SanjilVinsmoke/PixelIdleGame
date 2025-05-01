@@ -28,6 +28,7 @@ public class PlayerMoveState : BaseState<Player, PlayerEvent>
         owner.inputComponent.OnDashPerformed   += HandleRollPressed;
 
         // Play run animation if available
+        owner.dustEffectPrefab.Play();
         owner.animationComponent?.PlayAnimation(AnimationName.PlayerAnimationNames.RUN);
     }
 

@@ -35,7 +35,9 @@ public class PlayerRollState : BaseState<Player, PlayerEvent>
             owner.inputComponent.OnMovePerformed += HandleMoveInput;
             
             // Play the roll animation
+            owner.dustEffectPrefab.Play();
             owner.animationComponent?.PlayAnimation(AnimationName.PlayerAnimationNames.ROLL);
+            
         }
         else
         {
