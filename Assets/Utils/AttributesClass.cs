@@ -1,22 +1,22 @@
 ﻿using System;
+using UnityEngine;
 
 namespace Utils
 {
-    using UnityEngine;
-    using TMPro;
-
-// Attribute to specify the color for state debug visualization
+    // Attribute to specify the color for state debug visualization
     [System.AttributeUsage(System.AttributeTargets.Class)]
     public class StateDebugColorAttribute : System.Attribute
     {
         public Color Color { get; }
-    
-        // Constructor accepting Unity's built-in colors
+        public UnityColor ColorType { get; private set; }
+
+        // Constructor accepting our enum color type
         public StateDebugColorAttribute(UnityColor color)
         {
-            Color = GetUnityColor(color);
+            ColorType = color;  // Store the enum value
+            Color = GetUnityColor(color);  // Convert to actual Color
         }
-    
+
         // Helper enum for common colors
         public enum UnityColor
         {
@@ -32,7 +32,7 @@ namespace Utils
             Orange,
             Purple
         }
-    
+
         private Color GetUnityColor(UnityColor color)
         {
             return color switch
@@ -54,22 +54,19 @@ namespace Utils
     }
 
     // Attribute to specify the description for state debug visualization
-    
     [System.AttributeUsage(System.AttributeTargets.Class)]
     public class StateDescriptionAttribute : System.Attribute
     {
-        public string description { get; }
+        public string Description { get; }
+
         public StateDescriptionAttribute(string description)
         {
-            this.description = description;
+            this.Description = description;
         }
     }
-    
 
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
-    public class AutoRequireAttribute : Attribute { }
-
-    
-    
-    
+    public class AutoRequireAttribute : Attribute
+    {
+    }
 }

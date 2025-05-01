@@ -13,7 +13,7 @@ public class PlayerRollState : BaseState<Player, PlayerEvent>
     {
         base.Initialize(owner, stateMachine);
         // Get the RollComponent from the owner GameObject
-        rollComponent = owner.GetComponent<RollComponent>();
+        rollComponent = owner.rollComponent;
         if (rollComponent == null)
         {
             Debug.LogError("PlayerRollState requires a RollComponent on the Player GameObject.", owner);
@@ -24,12 +24,18 @@ public class PlayerRollState : BaseState<Player, PlayerEvent>
     {
         base.Enter();
 
-        if (rollComponent != null && rollComponent.StartRoll())
+        if (rollComponent != null && rollComponent.StartRoll(owner.inputComponent.MoveVector))
         {
             // Subscribe to the roll end event
             rollComponent.OnRollEnd += HandleRollEnd;
+            
+            // Subscribe to input events that can interrupt the roll
+            owner.inputComponent.OnJumpPerformed += HandleJumpInput;
+            owner.inputComponent.OnAttackPerformed += HandleAttackInput;
+            owner.inputComponent.OnMovePerformed += HandleMoveInput;
+            
             // Play the roll animation
-            owner.animationComponent?.PlayAnimation(AnimationName.PlayerAnimationNames.ROLL); // Use the correct animation name constant
+            owner.animationComponent?.PlayAnimation(AnimationName.PlayerAnimationNames.ROLL);
         }
         else
         {
@@ -59,8 +65,11 @@ public class PlayerRollState : BaseState<Player, PlayerEvent>
         if (rollComponent != null)
         {
             rollComponent.OnRollEnd -= HandleRollEnd;
-            // Optional: Ensure roll is stopped if exiting for reasons other than completion
-            // rollComponent.InterruptRoll(); // Be careful with this, might cause issues if already ended normally
+            
+            // Unsubscribe from input events
+            owner.inputComponent.OnJumpPerformed -= HandleJumpInput;
+            owner.inputComponent.OnAttackPerformed -= HandleAttackInput;
+            owner.inputComponent.OnMovePerformed -= HandleMoveInput;
         }
     }
 
@@ -84,5 +93,43 @@ public class PlayerRollState : BaseState<Player, PlayerEvent>
             stateMachine.ProcessEvent(PlayerEvent.Move);
         else
             stateMachine.ProcessEvent(PlayerEvent.Idle);
+    }
+    
+    // Handle jump input during roll
+    private void HandleJumpInput()
+    {
+        if (rollComponent != null && rollComponent.canInterruptRoll)
+        {
+            rollComponent.InterruptRoll();
+            stateMachine.ProcessEvent(PlayerEvent.Jump);
+        }
+    }
+    
+    // Handle attack input during roll
+    private void HandleAttackInput()
+    {
+        if (rollComponent != null && rollComponent.canInterruptRoll)
+        {
+            rollComponent.InterruptRoll();
+            stateMachine.ProcessEvent(PlayerEvent.Attack);
+        }
+    }
+    
+    // Handle move input during roll
+    private void HandleMoveInput(UnityEngine.InputSystem.InputAction.CallbackContext context)
+    {
+        // Only interrupt if there's significant input in a different direction
+        if (rollComponent != null && rollComponent.canInterruptRoll)
+        {
+            Vector2 input = context.ReadValue<Vector2>();
+            Vector2 rollDir = rollComponent.RollDirection;
+            
+            // Check if input is in a significantly different direction than the roll
+            if (input.magnitude > DeadZone && Vector2.Dot(input.normalized, rollDir) < 0.5f)
+            {
+                rollComponent.InterruptRoll();
+                stateMachine.ProcessEvent(PlayerEvent.Move);
+            }
+        }
     }
 }

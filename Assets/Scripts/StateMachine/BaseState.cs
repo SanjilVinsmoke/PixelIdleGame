@@ -112,7 +112,7 @@ public abstract class BaseState<T, TEvent> where TEvent : Enum
         var attributes = GetType().GetCustomAttributes(typeof(StateDescriptionAttribute), true);
         if (attributes.Length > 0)
         {
-            return ((StateDescriptionAttribute)attributes[0]).description;
+            return ((StateDescriptionAttribute)attributes[0]).Description;
         }
         return "No description available";
     }
