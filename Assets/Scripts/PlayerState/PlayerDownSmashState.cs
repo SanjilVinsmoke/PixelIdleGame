@@ -78,7 +78,7 @@ public class PlayerDownSmashState : BaseState<Player, PlayerEvent>
 
     private void OnSmashImpact()
     { 
-        DOTweenHelper.DoCameraShake2D(Camera.main, duration: 0.2f, strength: 0.5f);
+       
         owner.animationComponent?.PlayAnimation(AnimationName.PlayerAnimationNames.LANDED);
     }
 
@@ -89,8 +89,6 @@ public class PlayerDownSmashState : BaseState<Player, PlayerEvent>
         
         hasEndedSmash = true;
         
-        
-       
         owner.animationComponent?.PlayAnimation(AnimationName.PlayerAnimationNames.LANDED);
        
         
