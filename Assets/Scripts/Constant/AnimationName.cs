@@ -14,6 +14,8 @@
             public static readonly string FALL = "Fall";
             public static readonly string ROLL = "Roll";
             public static readonly string HIT = "Hit";
+            
+            public static readonly string LANDED = "Landed";
         } 
  
     }
