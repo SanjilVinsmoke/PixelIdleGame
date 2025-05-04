@@ -29,8 +29,13 @@ namespace Component
         public void PlayAnimation(string animationName)
         {
             // Check if the animation exists in the animator
-            
+            if (!animator.HasState(0, Animator.StringToHash(animationName)))
+            {
+                Debug.LogWarning($"Animation '{animationName}' not found in Animator.");
+                return;
+            }
             animator.Play(animationName);
+            
             
         }
         public void StopAnimation(string animationName)

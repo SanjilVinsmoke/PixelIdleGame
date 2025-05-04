@@ -1,16 +1,27 @@
+using System.Collections.Generic;
+using Managers;
+using StateMachine;
 using UnityEngine;
 
-public class Worm : MonoBehaviour
+public class Worm : Enemy<Worm>
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
+ 
+    [Header("Worm Settings")]
+    public LayerMask groundLayer;
+    public LayerMask wallLayer;
+    public float moveSpeed = 5f;
+    
+    
+    protected override void Start() {
+        base.Start();
+        // Initialize the state machine with the initial state
+        stateMachine.AddEventMapping(EnemyEvent.Move, () => stateMachine.ChangeState<EnemyIdleState<Worm>>());
+        stateMachine.AddState(new EnemyRoamState<Worm>());
+        stateMachine.AddState(new EnemyIdleState<Worm>());
+       stateMachine.SetInitialState<EnemyRoamState<Worm>>();
+        
         
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    
+    
 }

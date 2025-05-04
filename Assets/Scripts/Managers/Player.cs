@@ -48,6 +48,7 @@ public class Player : MonoBehaviour
     {
         ComponentInjector.InjectComponents(this);
         StateMachine<Player, PlayerEvent>.DebugMode = debugMode;
+        healthComponent.OnDeath += Die;
     }
 
     private void Start()
@@ -105,6 +106,6 @@ public class Player : MonoBehaviour
     public void Die()
     {
         Debug.Log("Player died");
-        // Optionally play death animation, disable controls, etc.
+        stateMachine.ProcessEvent(PlayerEvent.Death);
     }
 }

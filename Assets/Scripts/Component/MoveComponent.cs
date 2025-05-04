@@ -4,7 +4,7 @@ using UnityEngine;
 public class MoveComponent : MonoBehaviour
 {
     [SerializeField] private MovementSo movementSo;
-    [SerializeField] private Rigidbody2D rb;
+    [SerializeField] public Rigidbody2D rb;
 
     private bool isFacingRight = true;
 
@@ -58,7 +58,7 @@ public class MoveComponent : MonoBehaviour
             Flip();
     }
 
-    private void Flip()
+    public void Flip()
     {
         isFacingRight = !isFacingRight;
         Vector3 scale = transform.localScale;

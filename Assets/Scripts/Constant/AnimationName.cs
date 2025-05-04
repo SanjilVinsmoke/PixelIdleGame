@@ -18,5 +18,17 @@
             public static readonly string LANDED = "Landed";
         } 
  
+        
+        public static class EnemyAnimationNames
+        {
+            public static readonly string IDLE = "Idle";
+            public static readonly string RUN = "Run";
+            public static readonly string ATTACK = "Attack";
+            public static readonly string DEATH = "Death";
+            public static readonly string HIT = "Hit";
+        }
+        
+     
+        
     }
 }

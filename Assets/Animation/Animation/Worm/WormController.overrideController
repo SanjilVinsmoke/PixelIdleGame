@@ -8,4 +8,8 @@ AnimatorOverrideController:
   m_PrefabAsset: {fileID: 0}
   m_Name: WormController
   m_Controller: {fileID: 9100000, guid: c6c834aa5dc1c674583ad6d1895da515, type: 2}
-  m_Clips: []
+  m_Clips:
+  - m_OriginalClip: {fileID: 7400000, guid: b16f976ef22a64c4cb364310e0f98f80, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 4fbc4410ef5eaba44b59eda96dc910fb, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: 8ed5dfd96fb23f64fa9cc629ddd536d2, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: a03f7a83345da5e46bf56c0174ec276a, type: 2}
