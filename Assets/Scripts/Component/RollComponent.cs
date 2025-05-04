@@ -1,6 +1,9 @@
 using UnityEngine;
 using System;
+using Unity.VisualScripting;
+using UnityEngine.Serialization;
 
+[RequireComponent(typeof(Rigidbody2D))]
 public class RollComponent : MonoBehaviour
 {
     [Header("Roll Settings")]
@@ -8,11 +11,13 @@ public class RollComponent : MonoBehaviour
     [SerializeField] private float rollSpeed = 10f;
     [SerializeField] private float rollCooldown = 1.0f; // Time before another roll can start
 
-    [Header("Dependencies")]
-    [SerializeField] private Rigidbody2D rb;
-    [SerializeField] private InputComponent inputComponent; // To get input direction
-    [SerializeField] private Transform playerTransform; // To get facing direction if no input
+    private Rigidbody2D rb;
 
+     [SerializeField] private Transform entityTransform; // To get facing direction if no input
+
+    
+    public bool canInterruptRoll = true; // Allow external interruption of the roll
+    
     public bool IsRolling { get; private set; }
     public Vector2 RollDirection { get; private set; }
 
@@ -27,8 +32,8 @@ public class RollComponent : MonoBehaviour
     {
         // Auto-assign components if not set in inspector
         if (rb == null) rb = GetComponent<Rigidbody2D>();
-        if (inputComponent == null) inputComponent = GetComponent<InputComponent>();
-        if (playerTransform == null) playerTransform = transform; // Assuming component is on the player object
+        
+        if (entityTransform == null) entityTransform = transform; // Assuming component is on the player object
     }
 
     void FixedUpdate()
@@ -45,7 +50,7 @@ public class RollComponent : MonoBehaviour
         return !IsRolling && Time.time >= lastRollTime + rollCooldown;
     }
 
-    public bool StartRoll()
+    public bool StartRoll(Vector2 MoveVector)
     {
         if (!CanRoll())
         {
@@ -57,7 +62,7 @@ public class RollComponent : MonoBehaviour
         lastRollTime = Time.time; // Start cooldown timer
 
         // Determine roll direction
-        Vector2 input = inputComponent.MoveVector;
+        Vector2 input = MoveVector;
         if (input.sqrMagnitude > DeadZone * DeadZone)
         {
             // Prefer horizontal input direction for roll
@@ -66,7 +71,7 @@ public class RollComponent : MonoBehaviour
         else
         {
             // If no input, roll in the direction the player is facing
-            RollDirection = new Vector2(Mathf.Sign(playerTransform.localScale.x), 0f);
+            RollDirection = new Vector2(Mathf.Sign(entityTransform.localScale.x), 0f);
         }
 
         // Optional: Apply initial impulse or set velocity directly
@@ -105,9 +110,11 @@ public class RollComponent : MonoBehaviour
     // Optional: Allow external interruption of the roll
     public void InterruptRoll()
     {
-        if (IsRolling)
+        if (IsRolling ||  canInterruptRoll )
         {
             EndRoll();
+
         }
+        
     }
 }

@@ -18,7 +18,7 @@ public class PlayerMoveState : BaseState<Player, PlayerEvent>
     {
         rb = owner.GetComponent<Rigidbody2D>();
         base.Enter();
-    horizontalInput = owner.inputComponent.MoveVector.x;
+        horizontalInput = owner.inputComponent.MoveVector.x;
         if (Mathf.Abs(horizontalInput) < DeadZone)
             horizontalInput = 0f;
         // Subscribe to relevant input events
@@ -28,6 +28,7 @@ public class PlayerMoveState : BaseState<Player, PlayerEvent>
         owner.inputComponent.OnDashPerformed   += HandleRollPressed;
 
         // Play run animation if available
+        owner.dustEffectPrefab.Play();
         owner.animationComponent?.PlayAnimation(AnimationName.PlayerAnimationNames.RUN);
     }
 

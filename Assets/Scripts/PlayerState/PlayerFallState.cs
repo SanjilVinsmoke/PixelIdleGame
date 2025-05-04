@@ -8,6 +8,7 @@ using Utils;
 public class PlayerFallState : BaseState<Player, PlayerEvent>
 {
     private float horizontalInput;
+    private float verticalInput;
     private Rigidbody2D rb;
     private const float DeadZone = 0.1f;
 
@@ -16,6 +17,7 @@ public class PlayerFallState : BaseState<Player, PlayerEvent>
         base.Enter();
         rb = owner.GetComponent<Rigidbody2D>();
         horizontalInput = owner.inputComponent.MoveVector.x;
+        verticalInput = owner.inputComponent.MoveVector.y;
 
         owner.inputComponent.OnMovePerformed += HandleMove;
         // Listen for the JumpPerformed too, so you can double-jump in FallState:
@@ -31,6 +33,11 @@ public class PlayerFallState : BaseState<Player, PlayerEvent>
     {
         base.FixedUpdate();
         owner.movementComponent.Move(horizontalInput);
+        // In your input handling method
+        if (verticalInput < -0.5f) // Pressing down
+        {
+            stateMachine.ProcessEvent(PlayerEvent.DownSmash);
+        }
 
         if (owner.jumpComponent.isGrounded && Mathf.Abs(rb.linearVelocity.y) < 0.1f)
             HandleLanded();
@@ -48,10 +55,19 @@ public class PlayerFallState : BaseState<Player, PlayerEvent>
 
     private void HandleMove(InputAction.CallbackContext ctx)
     {
-        if (ctx.performed)  
+        if (ctx.performed)
+        {
             horizontalInput = ctx.ReadValue<Vector2>().x;
-        else if (ctx.canceled) 
+            verticalInput = ctx.ReadValue<Vector2>().y;
+        }
+        
+        else if (ctx.canceled)
+        {
             horizontalInput = 0f;
+            verticalInput = 0f;
+        }
+        
+        
     }
 
     private void HandleJumpPressed()

@@ -13,13 +13,18 @@ public enum PlayerEvent
     Dash,
     Roll,
     Hit,
-    Death
+    Death,
+    DownSmash,
 }
 
 public class Player : MonoBehaviour
 {
     [Header("Player Settings")]
-    [SerializeField] public  bool debugMode = false; // Enable debug mode for state machine
+    [SerializeField] public  bool debugMode = false;
+
+     public ParticleSystem dustEffectPrefab;
+    
+    // Enable debug mode for state machine
     // Auto-injected components
     [AutoRequire] public InputComponent     inputComponent;
     [AutoRequire] public MoveComponent      movementComponent;
@@ -29,8 +34,12 @@ public class Player : MonoBehaviour
     [AutoRequire] public HealthComponent    healthComponent;
     [AutoRequire] public AnimationComponent animationComponent;
     [AutoRequire] public RollComponent      rollComponent;
-
+    [AutoRequire] public SmashComponent     smashComponent;
+    
+    
     private StateMachine<Player, PlayerEvent> stateMachine;
+    
+    
     
     // Current State
     public System.Type CurrentState => stateMachine.CurrentState?.GetType();
@@ -53,6 +62,7 @@ public class Player : MonoBehaviour
             sm.AddEventMapping(PlayerEvent.Dash,   () => sm.ChangeState<PlayerDashState>());
             sm.AddEventMapping(PlayerEvent.Fall,   () => sm.ChangeState<PlayerFallState>());
             sm.AddEventMapping(PlayerEvent.Roll,   () => sm.ChangeState<PlayerRollState>());
+            sm.AddEventMapping(PlayerEvent.DownSmash, () => sm.ChangeState<PlayerDownSmashState>());
             //sm.AddEventMapping(PlayerEvent.Hit,    () => sm.ChangeState<PlayerHitState>());
             //sm.AddEventMapping(PlayerEvent.Die,    () => sm.ChangeState<PlayerDieState>());
         });
@@ -65,6 +75,7 @@ public class Player : MonoBehaviour
         stateMachine.AddState(new PlayerDashState());
         stateMachine.AddState(new PlayerFallState());
         stateMachine.AddState(new PlayerRollState());
+        stateMachine.AddState(new PlayerDownSmashState());
       //  stateMachine.AddState(new PlayerHitState());
        // stateMachine.AddState(new PlayerDieState());
 

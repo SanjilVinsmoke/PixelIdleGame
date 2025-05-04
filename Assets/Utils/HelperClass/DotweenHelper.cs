@@ -137,7 +137,8 @@ public static class DOTweenHelper
     /// </summary>
     public static Tween DoCameraShake2D(this Camera camera, float duration, float strength = 1f, int vibrato = 10)
     {
-        return camera.DOShakePosition(duration, new Vector3(strength, strength, 0), vibrato);
+        // Use relative shake with fadeOut=true to prevent permanent camera displacement
+        return camera.DOShakePosition(duration, new Vector3(strength, strength, 0), vibrato, 90, true, DG.Tweening.ShakeRandomnessMode.Harmonic);
     }
     
     /// <summary>
