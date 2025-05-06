@@ -17,7 +17,7 @@ namespace StateMachine
         private bool isWallAhead;
       
         private float          dir = .1f;               // current facing direction: +1 right, -1 left
-        private const float    rayOriginYOffset = -0.5f; // adjust to character’s feet
+        private const float    rayOriginYOffset = -0.5f; // adjust to character's feet
         private const float    checkDistance     = .2f;
         // Check if enemy is facing wall 
         
@@ -49,14 +49,12 @@ namespace StateMachine
             );
 
            
-            isWallAhead = PhysicsUtils.IsFacingWall(rb, owner.wallLayer, 3f, debugMode: true);
-          Debug.Log($"isGroundAhead: {isGroundAhead}, isWallAhead: {isWallAhead}");
+            // Pass the direction to IsFacingWall
+            isWallAhead = PhysicsUtils.IsFacingWall(rb, owner.wallLayer, dir, 1f, debugMode: true);
+            Debug.Log($"isGroundAhead: {isGroundAhead}, isWallAhead: {isWallAhead}");
             if (!isGroundAhead || isWallAhead)
             {
                 dir *= -1f;
-                owner.movementComponent.Flip();
-
-
             }
             
             owner.movementComponent.Move(dir);
