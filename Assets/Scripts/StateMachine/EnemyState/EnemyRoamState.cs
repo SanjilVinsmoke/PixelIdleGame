@@ -11,12 +11,14 @@ namespace StateMachine
     [StateDebugColor(StateDebugColorAttribute.UnityColor.Green)]
     public class EnemyRoamState<T> : BaseState<Worm , EnemyEvent> 
     {
-        
         private Rigidbody2D rb;
-        private bool isFacingWall;
-        private bool isGrounded;
+  
+        private bool isGroundAhead;
+        private bool isWallAhead;
       
-        
+        private float          dir = .1f;               // current facing direction: +1 right, -1 left
+        private const float    rayOriginYOffset = -0.5f; // adjust to character’s feet
+        private const float    checkDistance     = .2f;
         // Check if enemy is facing wall 
         
 
@@ -25,36 +27,40 @@ namespace StateMachine
             rb = owner.movementComponent.rb;
             base.Enter();
             owner.animationComponent.PlayAnimation(AnimationName.EnemyAnimationNames.RUN);
+            dir =owner.moveSpeed;
             
-         
+
         }
         
         public override void Update()
         {
             base.Update();
-            // Check if enemy is facing wall
            
-            isFacingWall = PhysicsUtils.IsFacingWall(rb, owner.wallLayer ,2f, true);
-            isGrounded = PhysicsUtils.IsGrounded(rb, owner.groundLayer ,2f , true);
+            Vector2  origin  = rb.position + Vector2.up * rayOriginYOffset;
+            Vector2  forward = Vector2.right * dir;
+        
+            isGroundAhead = PhysicsUtils.IsGroundAhead(
+                rb,
+                owner.groundLayer,
+                rayOriginYOffset,
+                forward,
+                checkDistance,
+                debugMode: true
+            );
 
-            // Determine movement direction based on environment conditions
-            float movementDirection = owner.moveSpeed;
-            Debug.Log("Is facing wall: " + isFacingWall );
-            Debug.Log("Is grounded: " + isGrounded );
-            // If facing a wall, reverse direction
-            if (isFacingWall)
+           
+            isWallAhead = PhysicsUtils.IsFacingWall(rb, owner.wallLayer, 3f, debugMode: true);
+          Debug.Log($"isGroundAhead: {isGroundAhead}, isWallAhead: {isWallAhead}");
+            if (!isGroundAhead || isWallAhead)
             {
-                movementDirection = -movementDirection;
+                dir *= -1f;
+                owner.movementComponent.Flip();
+
+
             }
             
-            // If not grounded, also reverse direction
-            if (!isGrounded)
-            {
-                movementDirection = -movementDirection;
-            }
-            
-            // Apply the final movement
-            owner.movementComponent.Move(movementDirection);
+            owner.movementComponent.Move(dir);
+
         }
     }
      
