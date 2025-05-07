@@ -5,11 +5,7 @@ using UnityEngine;
 
 public class Worm : Enemy<Worm>
 {
- 
-    [Header("Worm Settings")]
-    public LayerMask groundLayer;
-    public LayerMask wallLayer;
-    public float moveSpeed = 5f;
+    
     
     
     protected override void Start() {

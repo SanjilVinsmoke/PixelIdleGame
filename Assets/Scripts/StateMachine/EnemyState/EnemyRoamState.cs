@@ -27,7 +27,7 @@ namespace StateMachine
             rb = owner.movementComponent.rb;
             base.Enter();
             owner.animationComponent.PlayAnimation(AnimationName.EnemyAnimationNames.RUN);
-            dir =owner.moveSpeed;
+            dir =owner.enemyData.moveSpeed;
             
 
         }
@@ -41,7 +41,7 @@ namespace StateMachine
         
             isGroundAhead = PhysicsUtils.IsGroundAhead(
                 rb,
-                owner.groundLayer,
+                owner.enemyData.groundLayer,
                 rayOriginYOffset,
                 forward,
                 checkDistance,
@@ -50,7 +50,7 @@ namespace StateMachine
 
            
             // Pass the direction to IsFacingWall
-            isWallAhead = PhysicsUtils.IsFacingWall(rb, owner.wallLayer, dir, 1f, debugMode: true);
+            isWallAhead = PhysicsUtils.IsFacingWall(rb, owner. enemyData.wallLayer, dir, 1f, debugMode: true);
             Debug.Log($"isGroundAhead: {isGroundAhead}, isWallAhead: {isWallAhead}");
             if (!isGroundAhead || isWallAhead)
             {
