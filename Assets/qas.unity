@@ -5371,27 +5371,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fcb45d66099f6ad4580b949b129e415e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  debugMode: 1
-  playerDetectionRadius: 1
-  playerLayer:
-    serializedVersion: 2
-    m_Bits: 512
-  waypoints:
-  - {fileID: 1256468848}
-  - {fileID: 1474835937}
-  waypointStopDistance: 0.1
-  loopWaypoints: 1
+  enemyData: {fileID: 11400000, guid: 74e03efe9d23c28499981a2483c75fea, type: 2}
   movementComponent: {fileID: 0}
   attackComponent: {fileID: 0}
   healthComponent: {fileID: 0}
   animationComponent: {fileID: 0}
-  groundLayer:
-    serializedVersion: 2
-    m_Bits: 128
-  wallLayer:
-    serializedVersion: 2
-    m_Bits: 256
-  moveSpeed: 1
 --- !u!114 &1109255720
 MonoBehaviour:
   m_ObjectHideFlags: 0
