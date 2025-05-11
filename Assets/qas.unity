@@ -6458,6 +6458,10 @@ PrefabInstance:
       propertyPath: coyoteTimeThreshold
       value: 0.1
       objectReference: {fileID: 0}
+    - target: {fileID: 6910857834356625944, guid: 29305b0961e869a4ca7e3fb1311960c7, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 7bda330c8da2922409a1b218fda2ec13, type: 2}
     - target: {fileID: 7282828596918356989, guid: 29305b0961e869a4ca7e3fb1311960c7, type: 3}
       propertyPath: m_Name
       value: Player

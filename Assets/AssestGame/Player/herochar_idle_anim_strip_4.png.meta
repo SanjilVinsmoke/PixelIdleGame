@@ -57,7 +57,7 @@ TextureImporter:
   compressionQuality: 50
   spriteMode: 2
   spriteExtrude: 1
-  spriteMeshType: 1
+  spriteMeshType: 0
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 32
@@ -125,9 +125,9 @@ TextureImporter:
       name: herochar_idle_anim_strip_4_0
       rect:
         serializedVersion: 2
-        x: 1
+        x: 0
         y: 0
-        width: 13
+        width: 16
         height: 16
       alignment: 0
       pivot: {x: 0, y: 0}
@@ -147,9 +147,9 @@ TextureImporter:
       name: herochar_idle_anim_strip_4_1
       rect:
         serializedVersion: 2
-        x: 17
+        x: 16
         y: 0
-        width: 13
+        width: 16
         height: 16
       alignment: 0
       pivot: {x: 0, y: 0}
@@ -169,9 +169,9 @@ TextureImporter:
       name: herochar_idle_anim_strip_4_2
       rect:
         serializedVersion: 2
-        x: 33
+        x: 32
         y: 0
-        width: 13
+        width: 16
         height: 16
       alignment: 0
       pivot: {x: 0, y: 0}
@@ -179,9 +179,9 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: d29b99bb86de279e0800000000000000
+      spriteID: 80e386b1d3b00414ca111e4229783fb4
       internalID: -1624975481447532243
       vertices: []
       indices: 
@@ -191,9 +191,9 @@ TextureImporter:
       name: herochar_idle_anim_strip_4_3
       rect:
         serializedVersion: 2
-        x: 49
+        x: 48
         y: 0
-        width: 13
+        width: 16
         height: 16
       alignment: 0
       pivot: {x: 0, y: 0}
@@ -201,9 +201,9 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: b10a082f5580ec760800000000000000
+      spriteID: 052234f7f0425694cadb884b8a527f46
       internalID: 7479925196342730779
       vertices: []
       indices: 
@@ -213,7 +213,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: a9d20a86cba5ae84f8f36e8c23fcb684
     internalID: 0
     vertices: []
     indices: 
