@@ -99,6 +99,7 @@ public class Player : MonoBehaviour
 
     public void TakeDamage(float damage)
     {
+        
         healthComponent.TakeDamage(damage);
 
     }

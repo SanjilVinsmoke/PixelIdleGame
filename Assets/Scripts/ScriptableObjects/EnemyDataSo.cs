@@ -41,5 +41,15 @@ namespace ScriptableObjects
         public int damage = 1;
         [Tooltip("Cooldown between attacks (seconds)")]
         public float attackCooldown = 1f;
+        
+        
+        [Header("Knockback Settings")]
+        [Tooltip("Knockback force applied to the enemy when hit")]
+        public float knockbackForce = 5f;
+        [Tooltip("Knockback duration (seconds)")]
+        public float knockbackDuration = 0.5f;
+
+      
+        
     }
 }

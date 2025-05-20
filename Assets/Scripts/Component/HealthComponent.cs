@@ -13,6 +13,7 @@ namespace Component.Interfaces
         [SerializeField]
         private HealthSo healthValues;
     
+        public bool IsDead => healthValues.isDead;
         private void Awake()
         {
            

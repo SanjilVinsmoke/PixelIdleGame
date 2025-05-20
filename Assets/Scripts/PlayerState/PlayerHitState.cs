@@ -8,16 +8,7 @@ public class PlayerHitState : BaseState<Player, PlayerEvent>
     private HitComponent hitComponent;
     private float hitStartTime;
 
-    // Removed: Custom constructor
-    // public PlayerHitState(Player player, StateMachine stateMachine) : base(stateMachine)
-    // {
-    //     this.player = player;
-    //     this.hitComponent = player.GetComponent<HitComponent>();
-    //     if (hitComponent == null)
-    //     {
-    //         Debug.LogError("[PlayerHitState] HitComponent not found on Player!");
-    //     }
-    // }
+   
 
     // Added: Initialize method override
     public override void Initialize(Player owner, StateMachine<Player, PlayerEvent> stateMachine)

@@ -25,6 +25,7 @@ namespace Managers
         [Header("Enemy Settings")]
         public EnemyDataSo enemyData;
         
+        public Vector3 lastAttackPosition;
         // Enable debug mode for state machine
         // Auto-injected components
         [AutoRequire] public MoveComponent      movementComponent;
@@ -76,18 +77,27 @@ namespace Managers
             stateMachine.FixedUpdate();
         }
 
-        public void TakeDamage(float damage)
+        public void TakeDamage(float damage, Vector3  hitPosition)
         {
+            if (healthComponent.IsDead)
+                return;
+            lastAttackPosition = hitPosition;
             healthComponent.TakeDamage(damage);
             stateMachine.ProcessEvent(EnemyEvent.Hit);
         }
+      
+        public  virtual void   TakeDamage(float damage)
+        {
+            TakeDamage(damage, transform.position); // fallback to own position
+        }
+        
 
-        public void Die()
+        public virtual void Die()
         {
             stateMachine.ProcessEvent(EnemyEvent.Death);
         }
 
-        public void OnHit()
+        public virtual void OnHit()
         {
             stateMachine.ProcessEvent(EnemyEvent.Hit);
         }
