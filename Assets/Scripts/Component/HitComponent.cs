@@ -6,9 +6,11 @@ namespace Component
 {
     public class HitComponent : MonoBehaviour
     {
+        
+       
         [Header("Hit Reaction Settings")]
         [SerializeField] private float knockbackForce = 5f;
-        [SerializeField] private float knockbackDuration = 0.2f;
+        [SerializeField] private float knockbackDuration = 0.5f;
         [SerializeField] private float invincibilityDuration = 1.0f; // Time player is invincible after being hit
 
         private Rigidbody2D rb;

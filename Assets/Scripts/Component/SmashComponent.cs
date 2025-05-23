@@ -142,7 +142,7 @@ namespace Component
                 var damageable = hit.GetComponent<Interfaces.IDamageable>();
                 if (damageable != null)
                 {
-                    damageable.TakeDamage(smashDamage);
+                    damageable.TakeDamage(smashDamage, Vector2.right);
                     damageable.OnHit();
                     onSmashHit?.Invoke(smashDamage);
                     SpawnImpactEffect(hit.ClosestPoint(transform.position));
@@ -171,7 +171,7 @@ namespace Component
                 var damageable = hit.GetComponent<Interfaces.IDamageable>();
                 if (damageable != null)
                 {
-                    damageable.TakeDamage(smashDamage);
+                    damageable.TakeDamage(smashDamage, Vector2.down);
                     damageable.OnHit();
                     var knockbackDir = (hit.transform.position - transform.position).normalized;
                     var hitRb = hit.GetComponent<Rigidbody2D>();

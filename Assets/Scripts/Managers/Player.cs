@@ -1,6 +1,8 @@
+using System;
 using UnityEngine;
 using Component;
 using Component.Interfaces;
+using PlayerState;
 using Utils;                         // For AutoRequireAttribute
 
 public enum PlayerEvent
@@ -17,11 +19,11 @@ public enum PlayerEvent
     DownSmash,
 }
 
-public class Player : MonoBehaviour
+public class Player : MonoBehaviour, IDamageable
 {
     [Header("Player Settings")]
     [SerializeField] public  bool debugMode = false;
-
+    public Vector2 LastHitDirection { get; set; }
      public ParticleSystem dustEffectPrefab;
     
     // Enable debug mode for state machine
@@ -35,7 +37,7 @@ public class Player : MonoBehaviour
     [AutoRequire] public AnimationComponent animationComponent;
     [AutoRequire] public RollComponent      rollComponent;
     [AutoRequire] public SmashComponent     smashComponent;
-    
+    [AutoRequire] public HitComponent       hitComponent;   
     
     private StateMachine<Player, PlayerEvent> stateMachine;
     
@@ -64,7 +66,8 @@ public class Player : MonoBehaviour
             sm.AddEventMapping(PlayerEvent.Fall,   () => sm.ChangeState<PlayerFallState>());
             sm.AddEventMapping(PlayerEvent.Roll,   () => sm.ChangeState<PlayerRollState>());
             sm.AddEventMapping(PlayerEvent.DownSmash, () => sm.ChangeState<PlayerDownSmashState>());
-            //sm.AddEventMapping(PlayerEvent.Hit,    () => sm.ChangeState<PlayerHitState>());
+            sm.AddEventMapping(PlayerEvent.Hit,    () => sm.ChangeState<PlayerHitState>());
+            sm.AddEventMapping(PlayerEvent.Death, () => sm.ChangeState<PlayerSwimState>());
             //sm.AddEventMapping(PlayerEvent.Die,    () => sm.ChangeState<PlayerDieState>());
         });
 
@@ -77,7 +80,8 @@ public class Player : MonoBehaviour
         stateMachine.AddState(new PlayerFallState());
         stateMachine.AddState(new PlayerRollState());
         stateMachine.AddState(new PlayerDownSmashState());
-      //  stateMachine.AddState(new PlayerHitState());
+        stateMachine.AddState(new PlayerHitState());
+        stateMachine.AddState(new PlayerSwimState());
        // stateMachine.AddState(new PlayerDieState());
 
         // Start in Idle
@@ -97,16 +101,32 @@ public class Player : MonoBehaviour
         stateMachine.FixedUpdate();
     }
 
-    public void TakeDamage(float damage)
+    public void TakeDamage(float damage , Vector2 hitDirection)
     {
-        
+        if (hitComponent.IsInvincible || healthComponent.IsDead)
+        {
+           return;
+        }
         healthComponent.TakeDamage(damage);
+        LastHitDirection = hitDirection;
+        if (!healthComponent.IsDead)
+        {
+            stateMachine.ChangeState<PlayerHitState>();
+        }
+        
 
     }
+
+  
 
     public void Die()
     {
         Debug.Log("Player died");
         stateMachine.ProcessEvent(PlayerEvent.Death);
+    }
+
+    public void OnHit()
+    {
+        throw new NotImplementedException();
     }
 }

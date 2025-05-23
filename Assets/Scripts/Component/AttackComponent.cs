@@ -50,7 +50,7 @@ namespace Component
                 IDamageable damagable = hitObject.GetComponent<IDamageable>();
                 if (damagable != null)
                 {
-                    damagable.TakeDamage(damageAmount);
+                    damagable.TakeDamage(damageAmount , hitObject.transform.position);
                 }
             }
 

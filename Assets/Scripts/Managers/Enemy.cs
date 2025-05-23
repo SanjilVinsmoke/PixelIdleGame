@@ -90,7 +90,12 @@ namespace Managers
         {
             TakeDamage(damage, transform.position); // fallback to own position
         }
-        
+
+
+        public void TakeDamage(float damage, Vector2 hitDirection)
+        {
+            
+        }
 
         public virtual void Die()
         {

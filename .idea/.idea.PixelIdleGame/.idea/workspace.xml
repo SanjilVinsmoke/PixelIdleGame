@@ -4,12 +4,24 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="20768d6a-cfe6-475a-8118-f4c3e0885339" name="Changes" comment="">
+    <list default="true" id="20768d6a-cfe6-475a-8118-f4c3e0885339" name="Changes" comment="aDDED">
+      <change afterPath="$PROJECT_DIR$/Assets/Scripts/PlayerState/PlayerSwimState.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scripts/PlayerState/PlayerSwimState.cs.meta" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.PixelIdleGame/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.PixelIdleGame/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Data/Player/TestPlayerSO.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Data/Player/TestPlayerSO.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Material/Outline.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Material/Outline.mat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Component/AttackComponent.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Component/AttackComponent.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Component/HealthComponent.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Component/HealthComponent.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Component/HitComponent.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Component/HitComponent.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Component/Interfaces/IDamageable.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Component/Interfaces/IDamageable.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Component/SmashComponent.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Component/SmashComponent.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scripts/Damge/Damager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Damge/Damager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Managers/Enemy.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Managers/Enemy.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scripts/Managers/Player.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Managers/Player.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/PlayerState/PlayerHitState.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/PlayerState/PlayerHitState.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/PlayerState/PlayerMoveState.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/PlayerState/PlayerMoveState.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/ScriptableObjects/HealthSo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/ScriptableObjects/HealthSo.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/qas.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/qas.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProjectSettings/ShaderGraphSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/ShaderGraphSettings.asset" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -32,6 +44,8 @@
   }
 }</component>
   <component name="HighlightingSettingsPerFile">
+    <setting file="mock://D:/No/unity/PixelIdleGame/Assets/Scripts/Damge/Damager.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://D:/No/unity/PixelIdleGame/Assets/Scripts/Managers/Player.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock://D:/No/unity/PixelIdleGame/ProjectSettings/ShaderGraphSettings.asset" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock://D:/No/unity/PixelIdleGame/ProjectSettings/ShaderGraphSettings.asset" root0="SKIP_HIGHLIGHTING" />
   </component>
@@ -112,8 +126,19 @@
       <updated>1746005430365</updated>
       <workItem from="1746005432469" duration="2765000" />
       <workItem from="1746685058031" duration="626000" />
-      <workItem from="1747717164235" duration="1345000" />
+      <workItem from="1747717164235" duration="2285000" />
+      <workItem from="1747806192537" duration="5403000" />
+      <workItem from="1747910759461" duration="2129000" />
     </task>
+    <task id="LOCAL-00001" summary="aDDED">
+      <option name="closed" value="true" />
+      <created>1747743534237</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1747743534237</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -140,5 +165,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
+    <MESSAGE value="aDDED" />
+    <option name="LAST_COMMIT_MESSAGE" value="aDDED" />
   </component>
 </project>

@@ -12,8 +12,8 @@ namespace Component.Interfaces
         public float Health { get; set; }
         [SerializeField]
         private HealthSo healthValues;
-    
-        public bool IsDead => healthValues.isDead;
+
+        public bool IsDead = false;
         private void Awake()
         {
            
@@ -29,7 +29,7 @@ namespace Component.Interfaces
            // sendEvent
             if (Health <= 0)
             {
-                healthValues.isDead = true;
+                IsDead = true;
                 OnDeath?.Invoke();
             }
         }

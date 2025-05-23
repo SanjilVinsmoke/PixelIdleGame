@@ -22,6 +22,7 @@ public class PlayerMoveState : BaseState<Player, PlayerEvent>
         if (Mathf.Abs(horizontalInput) < DeadZone)
             horizontalInput = 0f;
         // Subscribe to relevant input events
+        
         owner.inputComponent.OnMovePerformed   += HandleMovePerformed;
         owner.inputComponent.OnJumpPerformed   += HandleJumpPressed;
         owner.inputComponent.OnAttackPerformed += HandleAttackPressed;
