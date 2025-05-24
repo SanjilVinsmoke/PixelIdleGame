@@ -5,8 +5,7 @@ namespace Component
     
     public class AnimationComponent:MonoBehaviour
     {
-        [SerializeField]
-        Animator animator;
+       public Animator animator;
         
        
         

@@ -1,55 +1,88 @@
 ﻿// EnemyDataSo.cs
+using System;
+using System.Collections.Generic;
+using Managers;
 using UnityEngine;
 
 namespace ScriptableObjects
 {
-    [CreateAssetMenu(fileName = "NewEnemyData", menuName = "Enemies/Enemy Data", order = 1)]
+    public enum EnemyType
+    {
+        Worm,
+        Bat,
+        Spider,
+        Goblin,
+        Orc,
+        Skeleton,
+        Zombie,
+        Ghost,
+        Golem,
+        Dragon
+    }
+
+    [CreateAssetMenu(fileName = "New Enemy Data", menuName = "Enemy System/Enemy Data")]
     public class EnemyDataSo : ScriptableObject
     {
-        [Header("Identity")]
-        [Tooltip("Human-readable name for this enemy type")]
-        public string enemyName = "New Enemy";
-
-        [Header("Availability")]
-        [Tooltip("If false, this enemy will be ignored / not spawned at runtime")]
-        public bool isAvailable = true;
-
-        [Header("Visuals")]
-        [Tooltip("Sprite used to represent this enemy")]
-        public Sprite enemySprite;
-
-        [Header("Detection Settings")]
-        [Tooltip("How far the enemy can 'see' the player")]
-        public float playerDetectionRadius = 5f;
-        public LayerMask playerLayer;
-
-        [Header("Waypoint Settings")]
-        [Tooltip("Optional patrol waypoints. Leave empty to disable patrolling.")]
-        public Transform[] waypoints;
-
-        [Header("Movement & Combat")]
-        [Tooltip("How fast this enemy moves")]
+        [Header("Enemy Type")]
+        public EnemyType enemyType;
+        
+        [Header("Basic Info")]
+        public string enemyName;
+        public GameObject enemyPrefab;
+        
+        [Header("Core Stats")]
+        public float maxHealth = 100f;
+        public bool regenerateHealth = false;
+        public float healthRegenRate = 5f;
+        
+        [Header("Animation Settings")]
+        public RuntimeAnimatorController animatorController;
+        public float animationSpeed = 1f;
+        
+        [Header("Movement Settings")]
         public float moveSpeed = 3f;
+        public float rotationSpeed = 180f;
+        
+        [Header("Attack Settings")]
+        public float attackDamage = 25f;
+        public float attackRange = 2f;
+        public float attackCooldown = 1.5f;
+        
+        [Header("Touch Damage")]
+        [Tooltip("Damage dealt immediately on touch (e.g. Worm)")]
+        public float touchDamage = 10f;
+        public bool hasTouchDamage = false;
+        
+        [Header("Detection Settings")]
+        public float detectionRange = 8f;
+        public LayerMask playerLayer = 1;
+        
+        [Header("State Machine Settings")]
+        public List<EnemyStateData> availableStates = new List<EnemyStateData>();
+        public EnemyEvent defaultState = EnemyEvent.Idle;
+
+        [Header("Layer Settings")] 
         public LayerMask groundLayer;
         public LayerMask wallLayer;
-        
-        [Tooltip("Total health points")]
-        public int maxHealth = 10;
 
-        [Header("Attack Settings")]
-        [Tooltip("Damage per hit")]
-        public int damage = 1;
-        [Tooltip("Cooldown between attacks (seconds)")]
-        public float attackCooldown = 1f;
-        
         
         [Header("Knockback Settings")]
-        [Tooltip("Knockback force applied to the enemy when hit")]
         public float knockbackForce = 5f;
-        [Tooltip("Knockback duration (seconds)")]
         public float knockbackDuration = 0.5f;
-
-      
-        
+        // Legacy property for backward compatibility
+        public float detectionRadius 
+        { 
+            get => detectionRange; 
+            set => detectionRange = value; 
+        }
+    }
+    
+    [Serializable]
+    public class EnemyStateData
+    {
+        public EnemyEvent stateEvent;
+        public string stateClassName;
+        public bool isEnabled = true;
+        public float statePriority = 1f;
     }
 }

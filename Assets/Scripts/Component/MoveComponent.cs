@@ -1,19 +1,18 @@
-using ScriptableObjects;
+
 using UnityEngine;
 
 public class MoveComponent : MonoBehaviour
 {
-    [SerializeField] private MovementSo movementSo;
-    [SerializeField] public Rigidbody2D rb;
+    public float speed =0 ;
+    
+    public Rigidbody2D rb;
 
     private bool isFacingRight = true;
 
     private void Awake()
     {
-        if (movementSo == null)
-            Debug.LogError("MovementSo is not assigned on MoveComponent.");
-        if (rb == null)
-            rb = GetComponent<Rigidbody2D>();
+       rb = GetComponent<Rigidbody2D>();
+       
     }
 
     /// <summary>
@@ -33,7 +32,7 @@ public class MoveComponent : MonoBehaviour
 
         // Regular movement
         Vector2 velocity = rb.linearVelocity;
-        velocity.x = horizontalInput * movementSo.speed;
+        velocity.x = horizontalInput * speed;
         rb.linearVelocity = velocity;
 
         HandleFlip(horizontalInput);

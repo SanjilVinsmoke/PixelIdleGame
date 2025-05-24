@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e466850669060b45960bd2209eb6667, type: 3}
+  m_Name: Worm
+  m_EditorClassIdentifier: 
+  templateName: WormType
+  description: 
+  icon: {fileID: 0}
+  enemyType: 0
+  defaultData: {fileID: 11400000, guid: 74e03efe9d23c28499981a2483c75fea, type: 2}
+  basePrefab: {fileID: 0}
+  requiredComponents:
+  - MoveComponent
+  - AttackComponent
+  - HealthComponent
+  - AnimationComponent
+  defaultStates:
+  - stateEvent: 0
+    stateClassName: EnemyIdleState
+    isEnabled: 1
+    statePriority: 1
+  - stateEvent: 1
+    stateClassName: EnemyMoveState
+    isEnabled: 1
+    statePriority: 1
+  - stateEvent: 3
+    stateClassName: EnemyHitState
+    isEnabled: 1
+    statePriority: 1
+  - stateEvent: 4
+    stateClassName: EnemyDeathState
+    isEnabled: 1
+    statePriority: 1
+  - stateEvent: 7
+    stateClassName: EnemyFleeState
+    isEnabled: 1
+    statePriority: 1
+  - stateEvent: 5
+    stateClassName: EnemyRoamState
+    isEnabled: 1
+    statePriority: 1

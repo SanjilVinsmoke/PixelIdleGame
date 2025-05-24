@@ -1,15 +1,14 @@
 ﻿using Constant;
 using Managers;
-using NUnit.Framework;
+
 using UnityEngine;
 using Utils;
-using Random = UnityEngine.Random;
 
 namespace StateMachine
 {
     [StateDescription("Enemy is roaming between waypoints")]
     [StateDebugColor(StateDebugColorAttribute.UnityColor.Green)]
-    public class EnemyRoamState<T> : BaseState<Worm , EnemyEvent> 
+    public class EnemyRoamState<T> : BaseState<T , EnemyEvent> where T : Enemy<T>
     {
         private Rigidbody2D rb;
   

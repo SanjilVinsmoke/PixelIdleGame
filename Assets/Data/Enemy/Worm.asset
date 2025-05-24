@@ -12,21 +12,44 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9014c0f9e0342e7b673728ded7ece56, type: 3}
   m_Name: Worm
   m_EditorClassIdentifier: 
+  enemyType: 0
   enemyName: Worm
-  isAvailable: 1
-  enemySprite: {fileID: 0}
-  playerDetectionRadius: 5
+  enemyPrefab: {fileID: 7749235786472714663, guid: 947d653f30d7f5f478a39512befb116f, type: 3}
+  maxHealth: 30
+  regenerateHealth: 0
+  healthRegenRate: 5
+  animatorController: {fileID: 22100000, guid: 8835527268031e54da353c888b7c5365, type: 2}
+  animationSpeed: 1
+  moveSpeed: 1
+  rotationSpeed: 180
+  attackDamage: 25
+  attackRange: 2
+  attackCooldown: 1
+  touchDamage: 15
+  hasTouchDamage: 1
+  detectionRange: 8
   playerLayer:
     serializedVersion: 2
     m_Bits: 512
-  waypoints: []
-  moveSpeed: 0.1
+  availableStates:
+  - stateEvent: 5
+    stateClassName: EnemyRoamState
+    isEnabled: 1
+    statePriority: 0
+  - stateEvent: 3
+    stateClassName: EnemyHitState
+    isEnabled: 1
+    statePriority: 0
+  - stateEvent: 4
+    stateClassName: EnemyDeathState
+    isEnabled: 0
+    statePriority: 0
+  defaultState: 5
   groundLayer:
     serializedVersion: 2
     m_Bits: 128
   wallLayer:
     serializedVersion: 2
     m_Bits: 256
-  maxHealth: 20
-  damage: 1
-  attackCooldown: 1
+  knockbackForce: 5
+  knockbackDuration: 0.5

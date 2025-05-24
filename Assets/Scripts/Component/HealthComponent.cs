@@ -10,17 +10,10 @@ namespace Component.Interfaces
         public Action OnDeath { get; set; }
 
         public float Health { get; set; }
-        [SerializeField]
-        private HealthSo healthValues;
-
+        
+        
         public bool IsDead = false;
-        private void Awake()
-        {
-           
-            Health = healthValues.health;
-            
-            
-        }
+      
         public void TakeDamage(float damage)
         {
             

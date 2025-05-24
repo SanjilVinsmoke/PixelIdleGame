@@ -47,8 +47,11 @@ public class Player : MonoBehaviour, IDamageable
     public System.Type CurrentState => stateMachine.CurrentState?.GetType();
 
     private void Awake()
-    {
+    {       
+        
+     
         ComponentInjector.InjectComponents(this);
+        animationComponent.animator = transform.GetChild(0).GetComponent<Animator>();
         StateMachine<Player, PlayerEvent>.DebugMode = debugMode;
         healthComponent.OnDeath += Die;
     }
@@ -93,7 +96,7 @@ public class Player : MonoBehaviour, IDamageable
         // check debug mode
         
         stateMachine.Update();
-        Debug.Log($"Current State: {CurrentState}");
+      
     }
 
     private void FixedUpdate()
