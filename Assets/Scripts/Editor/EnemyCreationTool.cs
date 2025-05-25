@@ -1,9 +1,11 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEditor;
 using ScriptableObjects;
 using Managers;
+using Utils;
 
 namespace Editor
 {
@@ -376,8 +378,10 @@ namespace Editor
 
             if (target.GetComponent<Collider2D>() == null)
             {
-                var collider = target.AddComponent<CapsuleCollider2D>();
-                collider.size = new Vector2(1f, 1f);
+               
+                AddCollider(target);
+                var collider = target.GetComponent<Collider2D>();
+               
             }
 
             // Create sprite child if it doesn't exist
@@ -477,5 +481,39 @@ namespace Editor
             Debug.LogWarning($"Component type '{componentName}' not found.");
             return null;
         }
+        
+        public void AddCollider(GameObject target)
+        {
+            Type typeToAdd = GetColliderType(currentEnemyData.colliderType);
+            if (typeToAdd != null)
+            {
+                target.AddComponent(typeToAdd);
+            }
+            else
+            {
+                Debug.LogError("Invalid Collider2DType or type not supported.");
+            }
+        }
+        
+        
+        private Type GetColliderType(Enums.Collider2DType type)
+        {
+            switch (type)
+            {
+                case Enums.Collider2DType.BoxCollider2D:
+                    return typeof(BoxCollider2D);
+                case Enums.Collider2DType.CircleCollider2D:
+                    return typeof(CircleCollider2D);
+                case Enums.Collider2DType.CapsuleCollider2D:
+                    return typeof(CapsuleCollider2D);
+                case Enums.Collider2DType.PolygonCollider2D:
+                    return typeof(PolygonCollider2D);
+                default:
+                    return null;
+            }
+        }
     }
+   
+    
+    
 }

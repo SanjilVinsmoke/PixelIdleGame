@@ -27,7 +27,7 @@ MonoBehaviour:
   attackCooldown: 1
   touchDamage: 15
   hasTouchDamage: 1
-  detectionRange: 8
+  detectionRange: 1
   playerLayer:
     serializedVersion: 2
     m_Bits: 512
@@ -53,3 +53,4 @@ MonoBehaviour:
     m_Bits: 256
   knockbackForce: 5
   knockbackDuration: 0.5
+  colliderType: 1

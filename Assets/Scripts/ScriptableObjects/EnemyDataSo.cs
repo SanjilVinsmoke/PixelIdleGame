@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Managers;
 using UnityEngine;
+using Utils;
 
 namespace ScriptableObjects
 {
@@ -69,12 +70,18 @@ namespace ScriptableObjects
         [Header("Knockback Settings")]
         public float knockbackForce = 5f;
         public float knockbackDuration = 0.5f;
+        
+        [Header("Collider Settings")]
+        public Enums.Collider2DType colliderType = Enums.Collider2DType.BoxCollider2D;
+     
         // Legacy property for backward compatibility
         public float detectionRadius 
         { 
             get => detectionRange; 
             set => detectionRange = value; 
         }
+        
+      
     }
     
     [Serializable]

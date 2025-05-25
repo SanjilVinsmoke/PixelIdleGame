@@ -5,6 +5,7 @@ using Component;
 using Component.Interfaces;
 using ScriptableObjects;
 using StateMachine;
+using Unity.VisualScripting;
 using UnityEngine;
 using Utils;
 
@@ -49,7 +50,7 @@ namespace Managers
             ComponentInjector.InjectComponents(this);
             animationComponent.animator = transform.GetChild(0).GetComponent<Animator>();
             StateMachine<T, EnemyEvent>.DebugMode = debugMode;
-            
+           
             healthComponent.OnDeath += Die;
             ApplyEnemyData();
         }

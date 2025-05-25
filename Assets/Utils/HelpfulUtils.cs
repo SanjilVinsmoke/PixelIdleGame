@@ -4,8 +4,57 @@ using UnityEngine;
 
 namespace Utils
 {
+    public static class Enums 
+    {
+        public enum Collider2DType
+        {
+            BoxCollider2D,
+            CircleCollider2D,
+            CapsuleCollider2D,
+            PolygonCollider2D,
+        }
+        
+        
+        public enum Collider3DType
+        {
+            BoxCollider,
+            SphereCollider,
+            CapsuleCollider,
+            MeshCollider,
+            WheelCollider,
+            TerrainCollider
+        }
+    }
     public class HelpfulUtils
     {
+        
+        public static string FormatTime(float timeInSeconds)
+        {
+            TimeSpan timeSpan = TimeSpan.FromSeconds(timeInSeconds);
+            return string.Format("{0:D2}:{1:D2}:{2:D2}", 
+                timeSpan.Hours, 
+                timeSpan.Minutes, 
+                timeSpan.Seconds);
+        }
+        
+        public static string FormatTime(float timeInSeconds, bool includeMilliseconds)
+        {
+            TimeSpan timeSpan = TimeSpan.FromSeconds(timeInSeconds);
+            if (includeMilliseconds)
+            {
+                return string.Format("{0:D2}:{1:D2}:{2:D2}.{3:D3}", 
+                    timeSpan.Hours, 
+                    timeSpan.Minutes, 
+                    timeSpan.Seconds, 
+                    timeSpan.Milliseconds);
+            }
+            return string.Format("{0:D2}:{1:D2}:{2:D2}", 
+                timeSpan.Hours, 
+                timeSpan.Minutes, 
+                timeSpan.Seconds);
+        }
+        
+        
         public static string GenerateGUID()
         {
             return Guid.NewGuid().ToString();
