@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Component;
 using Component.Interfaces;
+using Damage;
 using ScriptableObjects;
 using StateMachine;
 using Unity.VisualScripting;
@@ -37,6 +38,7 @@ namespace Managers
         [AutoRequire] public AttackComponent    attackComponent;
         [AutoRequire] public HealthComponent    healthComponent;
         [AutoRequire] public AnimationComponent animationComponent;
+        [AutoRequire] public  DamageDealerComponent damageableComponent;
         
         protected StateMachine<T, EnemyEvent> stateMachine;
         private bool playerDetected = false;
@@ -102,6 +104,11 @@ namespace Managers
                     animator.runtimeAnimatorController = enemyData.animatorController;
                     animator.speed = enemyData.animationSpeed;
                 }
+            }
+            if(damageableComponent!= null)
+            {
+                damageableComponent.damageArea = enemyData.playerLayer;
+                damageableComponent.damageAmount = enemyData.touchDamage;
             }
         }
         

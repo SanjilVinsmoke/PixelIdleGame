@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class MoveComponent : MonoBehaviour
 {
-    public float speed =0 ;
+    public float speed =0; 
     
     public Rigidbody2D rb;
 

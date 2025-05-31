@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemyType: 0
   enemyName: Worm
+  enemyIcon: {fileID: 8879881333668894217, guid: e5205ce2bb39418418acf7e8fca863f6, type: 3}
   enemyPrefab: {fileID: 7749235786472714663, guid: 947d653f30d7f5f478a39512befb116f, type: 3}
   maxHealth: 30
   regenerateHealth: 0
@@ -53,4 +54,4 @@ MonoBehaviour:
     m_Bits: 256
   knockbackForce: 5
   knockbackDuration: 0.5
-  colliderType: 1
+  colliderType: 2

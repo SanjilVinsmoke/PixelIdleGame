@@ -26,7 +26,7 @@ namespace StateMachine
             rb = owner.movementComponent.rb;
             base.Enter();
             owner.animationComponent.PlayAnimation(AnimationName.EnemyAnimationNames.RUN);
-            dir =owner.enemyData.moveSpeed;
+           
             
 
         }

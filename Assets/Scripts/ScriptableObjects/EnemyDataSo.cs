@@ -29,6 +29,7 @@ namespace ScriptableObjects
         
         [Header("Basic Info")]
         public string enemyName;
+        public Sprite enemyIcon;
         public GameObject enemyPrefab;
         
         [Header("Core Stats")]

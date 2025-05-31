@@ -5,21 +5,22 @@ using UnityEngine;
 namespace Damage
 {
     [RequireComponent(typeof(Collider2D))]
-    public class DamageDealer:MonoBehaviour
+    public class DamageDealerComponent:MonoBehaviour
     {
         
-        [Tooltip("Which layers can be damaged")]
+        [HideInInspector]
         public LayerMask targetMask;
-        
-        private float damageAmount =10;
-
+        [HideInInspector]
+        public float damageAmount =10;
+        [HideInInspector]
+        public float damageArea = 1f;
         private void OnCollisionEnter2D(Collision2D other)
         {
           
             GameObject target = other.gameObject;
 
             if (((1 << target.layer) & targetMask) != 0)
-            { Utils.DebugUtils.DrawCircle( other.transform.position,2 , Color.red);
+            { Utils.DebugUtils.DrawCircle( other.transform.position,damageArea , Color.red);
                 var damageable = target.GetComponent<IDamageable>();
                 if (damageable != null)
                 {

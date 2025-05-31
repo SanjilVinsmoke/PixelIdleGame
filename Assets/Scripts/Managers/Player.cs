@@ -21,8 +21,10 @@ public enum PlayerEvent
 
 public class Player : MonoBehaviour, IDamageable
 {
+    
     [Header("Player Settings")]
-    [SerializeField] public  bool debugMode = false;
+    [SerializeField] private PlayerData playerData;
+    [SerializeField] private  bool debugMode = false;
     public Vector2 LastHitDirection { get; set; }
      public ParticleSystem dustEffectPrefab;
     
@@ -44,12 +46,10 @@ public class Player : MonoBehaviour, IDamageable
     
     
     // Current State
-    public System.Type CurrentState => stateMachine.CurrentState?.GetType();
+    public Type CurrentState => stateMachine.CurrentState?.GetType();
 
     private void Awake()
     {       
-        
-     
         ComponentInjector.InjectComponents(this);
         animationComponent.animator = transform.GetChild(0).GetComponent<Animator>();
         StateMachine<Player, PlayerEvent>.DebugMode = debugMode;
@@ -58,6 +58,8 @@ public class Player : MonoBehaviour, IDamageable
 
     private void Start()
     {
+        
+        movementComponent.speed = playerData.moveSpeed;
         // Configure state machine event-to-state mappings
         stateMachine = new StateMachine<Player, PlayerEvent>(this, sm =>
         {
