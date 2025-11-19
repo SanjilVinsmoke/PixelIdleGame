@@ -3,6 +3,7 @@ using UnityEngine;
 using Component;
 using Component.Interfaces;
 using PlayerState;
+using ScriptableObjects.PlayerScriptable;
 using Utils;                         // For AutoRequireAttribute
 
 public enum PlayerEvent
@@ -23,7 +24,7 @@ public class Player : MonoBehaviour, IDamageable
 {
     
     [Header("Player Settings")]
-    [SerializeField] private PlayerData playerData;
+    [SerializeField] private PlayerDataSo playerData;
     [SerializeField] private  bool debugMode = false;
     public Vector2 LastHitDirection { get; set; }
      public ParticleSystem dustEffectPrefab;

@@ -1078,6 +1078,7 @@ MonoBehaviour:
   attackComponent: {fileID: 0}
   healthComponent: {fileID: 0}
   animationComponent: {fileID: 0}
+  damageableComponent: {fileID: 0}
 --- !u!70 &2060675819
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -1478,6 +1479,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3629556047931908037, guid: 29305b0961e869a4ca7e3fb1311960c7, type: 3}
+      propertyPath: playerData
+      value: 
+      objectReference: {fileID: 11400000, guid: 35bab05af015fe74886a327e36631ded, type: 2}
     - target: {fileID: 7282828596918356989, guid: 29305b0961e869a4ca7e3fb1311960c7, type: 3}
       propertyPath: m_Name
       value: Player
