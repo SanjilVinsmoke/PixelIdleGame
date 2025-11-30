@@ -3,6 +3,8 @@ using System;
 using Unity.VisualScripting;
 using UnityEngine.Serialization;
 
+namespace Component
+{
 [RequireComponent(typeof(Rigidbody2D))]
 public class RollComponent : MonoBehaviour
 {
@@ -110,11 +112,10 @@ public class RollComponent : MonoBehaviour
     // Optional: Allow external interruption of the roll
     public void InterruptRoll()
     {
-        if (IsRolling ||  canInterruptRoll )
+        if (IsRolling && canInterruptRoll)
         {
             EndRoll();
-
         }
-        
     }
+}
 }

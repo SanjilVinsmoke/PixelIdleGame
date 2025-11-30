@@ -1,6 +1,9 @@
 using UnityEngine;
 using System;
+using ScriptableObjects;
 
+namespace Component
+{
 [RequireComponent(typeof(Rigidbody2D))]
 public class JumpComponent : MonoBehaviour
 {
@@ -130,8 +133,15 @@ public class JumpComponent : MonoBehaviour
 
     private void OnDrawGizmosSelected()
     {
+        #if UNITY_EDITOR
         if (groundCheckPoint == null) return;
-        Gizmos.color = Color.red;
+        
+        var settings = GizmoSettingsSo.Instance;
+        if (settings == null || !settings.ShouldDraw(GizmoCategory.GroundCheck)) return;
+        
+        Gizmos.color = settings.groundCheckColor;
         Gizmos.DrawWireCube(groundCheckPoint.position, groundCheckSize);
+        #endif
+    }
     }
 }

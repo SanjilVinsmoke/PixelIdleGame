@@ -1,6 +1,7 @@
 using Constant;
 using UnityEngine;
 using Utils;
+using Component;
 
 [StateDebugColor(StateDebugColorAttribute.UnityColor.Green)]
 [StateDescription("Handles player rolling on the ground using RollComponent.")]

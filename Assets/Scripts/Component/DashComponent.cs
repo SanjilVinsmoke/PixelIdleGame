@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using UnityEngine;
 
+namespace Component
+{
 [RequireComponent(typeof(Rigidbody2D))]
 public class DashComponent : MonoBehaviour
 {
@@ -112,5 +114,6 @@ public class DashComponent : MonoBehaviour
         rb.linearVelocity = Vector2.zero; // Stop sliding
         IsDashing = false;
         OnDashFinished?.Invoke();
+    }
     }
 }

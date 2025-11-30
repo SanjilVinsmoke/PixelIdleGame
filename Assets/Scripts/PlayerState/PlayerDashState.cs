@@ -2,6 +2,7 @@ using Constant;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Utils;
+using Component;
 
 [StateDebugColor(StateDebugColorAttribute.UnityColor.Orange)]
 [StateDescription("Handles a quick dash, then returns to Move/Idle.")]

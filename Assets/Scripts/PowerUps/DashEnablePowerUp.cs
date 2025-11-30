@@ -1,4 +1,5 @@
 using UnityEngine;
+using Component;
 
 public class DashEnablePowerUp : IPowerUp
 {

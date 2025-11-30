@@ -1,5 +1,6 @@
 ﻿using Component.Interfaces;
 using UnityEngine;
+using ScriptableObjects;
 
 
 
@@ -58,8 +59,15 @@ namespace Component
         }
         private void OnDrawGizmosSelected()
         {
+            #if UNITY_EDITOR
             if (attackPoint == null) return;
+            
+            var settings = GizmoSettingsSo.Instance;
+            if (settings == null || !settings.ShouldDraw(GizmoCategory.AttackRange)) return;
+            
+            Gizmos.color = settings.attackRangeColor;
             Gizmos.DrawWireSphere(attackPoint.position, attackRange);
+            #endif
         }
     }
 }

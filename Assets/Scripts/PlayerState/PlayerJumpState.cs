@@ -2,6 +2,7 @@ using Constant;
 using UnityEngine;
 using Utils;
 using UnityEngine.InputSystem;
+using Component;
 
 [StateDebugColor(StateDebugColorAttribute.UnityColor.Cyan)]
 [StateDescription("Handles player jumping: initial, double-jump, coyote time, in-air control, and landing.")]

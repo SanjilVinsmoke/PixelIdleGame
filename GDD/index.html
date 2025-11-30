@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Interface - Pixel Metroidvania GDD</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-dark: #050510;
+            --bg-panel: #0a0a1f;
+            --bg-card: rgba(16, 20, 45, 0.9);
+            
+            --neon-blue: #00eaff;
+            --neon-purple: #bc13fe;
+            --neon-red: #ff003c;
+            --neon-green: #00ff9d;
+            
+            --text-glow: 0 0 10px rgba(0, 234, 255, 0.5);
+            --border-glow: 0 0 15px rgba(0, 234, 255, 0.2);
+            
+            --text-main: #e0e0e0;
+            --text-dim: #8a8b9d;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: 'Rajdhani', sans-serif;
+            line-height: 1.6;
+            font-size: 18px;
+            overflow-x: hidden;
+            background-image: 
+                linear-gradient(rgba(0, 234, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 234, 255, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+
+        .system-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            background: radial-gradient(circle at 50% 50%, transparent 60%, rgba(0,0,0,0.6) 100%);
+            z-index: 9999;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header Styling */
+        header {
+            text-align: center;
+            margin-bottom: 4rem;
+            position: relative;
+            border-bottom: 2px solid var(--neon-blue);
+            padding-bottom: 2rem;
+            box-shadow: var(--border-glow);
+        }
+
+        header::before {
+            content: "SYSTEM INITIALIZED";
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--bg-dark);
+            padding: 0 1rem;
+            color: var(--neon-blue);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+        }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3.5rem;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            text-shadow: 0 0 20px var(--neon-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            color: var(--neon-blue);
+            font-size: 1.4rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* Section Styling */
+        .section {
+            background: var(--bg-card);
+            border: 1px solid rgba(0, 234, 255, 0.3);
+            margin-bottom: 3rem;
+            position: relative;
+            padding: 2rem;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+        }
+
+        .section::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--neon-blue), transparent);
+        }
+
+        .section::after {
+            content: "WINDOW_ID: " attr(data-id);
+            position: absolute;
+            top: -10px;
+            right: 20px;
+            background: var(--bg-dark);
+            border: 1px solid var(--neon-blue);
+            color: var(--neon-blue);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.7rem;
+            padding: 2px 8px;
+        }
+
+        h2 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--neon-blue);
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            border-left: 4px solid var(--neon-blue);
+            padding-left: 1rem;
+            display: flex;
+            align-items: center;
+        }
+
+        h3 {
+            color: white;
+            font-family: 'Orbitron', sans-serif;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 0.5rem;
+        }
+
+        /* Card Grid */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .card {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1.5rem;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            border-color: var(--neon-blue);
+            box-shadow: inset 0 0 20px rgba(0, 234, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .card h4 {
+            color: var(--neon-blue);
+            font-family: 'Orbitron', sans-serif;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .ability-card {
+            border-left: 2px solid var(--neon-purple);
+        }
+        .ability-card h4 { color: var(--neon-purple); }
+
+        .enemy-card {
+            border-left: 2px solid var(--neon-red);
+        }
+        .enemy-card h4 { color: var(--neon-red); }
+
+        /* Lists */
+        ul, ol {
+            list-style: none;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+            padding-left: 1.5rem;
+            position: relative;
+            color: var(--text-dim);
+        }
+
+        li::before {
+            content: ">";
+            position: absolute;
+            left: 0;
+            color: var(--neon-blue);
+            font-family: monospace;
+        }
+
+        strong {
+            color: white;
+            font-weight: 700;
+        }
+
+        /* Status Boxes */
+        .box {
+            padding: 1rem;
+            margin: 1rem 0;
+            border: 1px solid;
+            background: rgba(0,0,0,0.3);
+        }
+
+        .success-box {
+            border-color: var(--neon-green);
+            color: var(--neon-green);
+        }
+
+        .warning-box {
+            border-color: var(--neon-red);
+            color: var(--neon-red);
+        }
+        
+        .warning-box li::before { color: var(--neon-red); }
+        .success-box li::before { color: var(--neon-green); }
+
+        /* Flow Diagram */
+        .flow-diagram {
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px dashed var(--text-dim);
+            padding: 2rem;
+            font-family: 'Orbitron', sans-serif;
+            color: var(--neon-blue);
+            text-align: center;
+            margin: 2rem 0;
+        }
+
+        .arrow { color: var(--text-dim); margin: 0 10px; }
+
+        /* Priority List */
+        .priority-list {
+            counter-reset: item;
+        }
+
+        .priority-list li {
+            padding-left: 3rem;
+        }
+
+        .priority-list li::before {
+            content: counter(item, decimal-leading-zero);
+            counter-increment: item;
+            position: absolute;
+            left: 0;
+            color: var(--bg-dark);
+            background: var(--neon-blue);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.8rem;
+            padding: 2px 6px;
+            border-radius: 2px;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            margin-top: 4rem;
+            padding: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-dim);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.9rem;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="system-overlay"></div>
+
+    <div class="container">
+        <header>
+            <h1>PIXEL METROIDVANIA</h1>
+            <p class="subtitle">SYSTEM DESIGN DOCUMENTATION // VER. 1.0</p>
+            <div style="margin-top: 1rem; color: var(--neon-green); font-family: 'Orbitron'; font-size: 0.9rem;">
+                [ STATUS: MVP SCOPE ACTIVE ]
+            </div>
+        </header>
+
+        <!-- Core Concept -->
+        <section class="section" data-id="CORE_01">
+            <h2>🎯 System Directive</h2>
+            <p>Execute minimal-scope 2D Metroidvania protocol. Objective: Explore interconnected sectors, acquire ability modules, neutralize hostiles.</p>
+            
+            <div class="success-box box">
+                <strong>[PHILOSOPHY]:</strong> Execute absolute minimum viable product. Precision over scale.
+            </div>
+        </section>
+
+        <!-- Player Abilities -->
+        <section class="section" data-id="ABIL_02">
+            <h2>⚡ Ability Modules</h2>
+            
+            <div class="grid">
+                <div class="card ability-card">
+                    <h4>[DEFAULT] Basic Movement</h4>
+                    <p style="color: var(--neon-green)">STATUS: UNLOCKED</p>
+                    <ul>
+                        <li>Locomotion (Walk/Run)</li>
+                        <li>Vertical Propulsion (Jump)</li>
+                        <li>Melee Combat Protocol</li>
+                    </ul>
+                </div>
+
+                <div class="card ability-card">
+                    <h4>[MODULE] Dash</h4>
+                    <p style="color: var(--neon-red)">REQ: SECTOR 2 CLEARANCE</p>
+                    <ul>
+                        <li>High-velocity horizontal burst</li>
+                        <li>Phase through projectiles</li>
+                        <li>Cooldown: 1.0s</li>
+                    </ul>
+                </div>
+
+                <div class="card ability-card">
+                    <h4>[MODULE] Double Jump</h4>
+                    <p style="color: var(--neon-red)">REQ: SECTOR 3 CLEARANCE</p>
+                    <ul>
+                        <li>Secondary mid-air propulsion</li>
+                        <li>Vertical reach expansion</li>
+                    </ul>
+                </div>
+
+                <div class="card ability-card">
+                    <h4>[MODULE] Down Smash</h4>
+                    <p style="color: var(--neon-red)">REQ: SECTOR 2 CLEARANCE</p>
+                    <ul>
+                        <li>Kinetic impact strike</li>
+                        <li>Structure demolition capable</li>
+                        <li>AoE damage radius</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Level Design -->
+        <section class="section" data-id="ZONE_03">
+            <h2>🗺️ Sector Topology</h2>
+
+            <div class="grid">
+                <div class="card" style="border-left: 2px solid var(--neon-blue)">
+                    <h4>SECTOR 1: Initiation Zone</h4>
+                    <ul>
+                        <li>Objective: Tutorial & Combat Calibration</li>
+                        <li>Gates: None</li>
+                        <li>Exits: Sector 2, Sector 3</li>
+                    </ul>
+                </div>
+
+                <div class="card" style="border-left: 2px solid var(--neon-blue)">
+                    <h4>SECTOR 2: Dash Temple</h4>
+                    <ul>
+                        <li>Objective: Acquire Dash Module</li>
+                        <li>Requirement: Dash Ability</li>
+                        <li>Hazard Level: Medium</li>
+                    </ul>
+                </div>
+
+                <div class="card" style="border-left: 2px solid var(--neon-blue)">
+                    <h4>SECTOR 3: Sky Platforms</h4>
+                    <ul>
+                        <li>Objective: Acquire Jump Module V2</li>
+                        <li>Requirement: Double Jump</li>
+                        <li>Hazard Level: High</li>
+                    </ul>
+                </div>
+
+                <div class="card" style="border-left: 2px solid var(--neon-red)">
+                    <h4>SECTOR 4: The Core</h4>
+                    <ul>
+                        <li>Objective: Eliminate Boss Entity</li>
+                        <li>Requirement: All Modules</li>
+                        <li>Hazard Level: EXTREME</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="flow-diagram">
+                SEC 1 <span class="arrow">>></span> SEC 2 <span class="arrow">>></span> SEC 4 (BOSS)<br>
+                SEC 1 <span class="arrow">>></span> SEC 3 <span class="arrow">>></span> SEC 4 (BOSS)
+            </div>
+        </section>
+
+        <!-- Core Requirements -->
+        <section class="section" data-id="SYS_REQ">
+            <h2>🏰 Core System Requirements</h2>
+
+            <div class="grid">
+                <div class="card">
+                    <h4>1. Interconnected World</h4>
+                    <ul>
+                        <li>Seamless sector transition</li>
+                        <li>Hub-and-spoke topology</li>
+                        <li>Circular path logic</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h4>2. Progression Gating</h4>
+                    <ul>
+                        <li>Hard Gates (Ability Required)</li>
+                        <li>Soft Gates (Skill/Stat Required)</li>
+                        <li>Visual feedback for locked paths</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h4>3. Navigation System</h4>
+                    <ul>
+                        <li>Fog of War mapping</li>
+                        <li>Real-time position tracking</li>
+                        <li>Save Station markers</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h4>4. Persistence</h4>
+                    <ul>
+                        <li>JSON State Serialization</li>
+                        <li>Checkpoint restoration</li>
+                        <li>Inventory tracking</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Implementation Checklist -->
+        <section class="section" data-id="DEV_LOG">
+            <h2>🎯 Implementation Queue</h2>
+            
+            <div class="grid">
+                <div class="card">
+                    <h4>PHASE 1: Foundation</h4>
+                    <ol class="priority-list">
+                        <li style="color: var(--neon-green); text-decoration: line-through;">Movement Physics Tuning</li>
+                        <li style="color: var(--neon-green); text-decoration: line-through;">Ability Manager System</li>
+                        <li style="color: var(--neon-green); text-decoration: line-through;">Gate Logic Component</li>
+                        <li style="color: var(--neon-green); text-decoration: line-through;">Save/Load Protocol</li>
+                    </ol>
+            </div>
+
+                <div class="card">
+                    <h4>PHASE 2: World Build</h4>
+            <ol class="priority-list">
+                        <li style="color: var(--neon-green); text-decoration: line-through;">Sector 1 Layout</li>
+                        <li style="color: var(--neon-green); text-decoration: line-through;">Door/Transition Logic</li>
+                        <li style="color: var(--neon-green); text-decoration: line-through;">Room Trigger System</li>
+                        <li>Checkpoint Placement</li>
+            </ol>
+                </div>
+
+                <div class="card">
+                    <h4>PHASE 3: Interface</h4>
+                    <ol class="priority-list">
+                        <li>Mini-map Overlay</li>
+                        <li>HUD Status Display</li>
+                        <li>Inventory Grid</li>
+                        <li>Damage Numerics</li>
+                    </ol>
+                </div>
+
+                <div class="card">
+                    <h4>PHASE 4: Expansion</h4>
+                    <ol class="priority-list">
+                        <li>Sector 2 & Dash Ability</li>
+                        <li>Sector 3 & Jump Ability</li>
+                        <li>Upgrade Collectibles</li>
+                        <li>Boss Encounter Logic</li>
+                    </ol>
+                </div>
+            </div>
+        </section>
+
+        <!-- Boundaries -->
+        <section class="section" data-id="SCOPE_LIMIT">
+            <h2>📏 Scope Parameters</h2>
+            
+            <div class="grid">
+                <div class="success-box box">
+                    <h4>✅ APPROVED (MVP)</h4>
+                <ul>
+                        <li>4 Connected Sectors</li>
+                        <li>3 Ability Modules</li>
+                        <li>3 Enemy Classes</li>
+                        <li>1 Boss Entity</li>
+                        <li>Basic Save/Map System</li>
+                </ul>
+            </div>
+
+                <div class="warning-box box">
+                    <h4>❌ RESTRICTED (POST-LAUNCH)</h4>
+                <ul>
+                        <li>Complex NPC Interactions</li>
+                        <li>Skill Trees</li>
+                        <li>Multiple Endings</li>
+                        <li>Cinematics</li>
+                        <li>Online Connectivity</li>
+                </ul>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        SYSTEM TERMINATED // END OF FILE<br>
+        PIXEL_IDLE_GAME CODEBASE // REF: GDD_MVP_V1
+    </footer>
+</body>
+</html>

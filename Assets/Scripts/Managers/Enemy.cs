@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Component;
 using Component.Interfaces;
-using Damage;
 using ScriptableObjects;
 using StateMachine;
-using Unity.VisualScripting;
 using UnityEngine;
 using Utils;
 
@@ -249,17 +247,29 @@ namespace Managers
         
         protected virtual void OnDrawGizmosSelected()
         {
+            #if UNITY_EDITOR
             if (enemyData == null) return;
             
+            var settings = GizmoSettingsSo.Instance;
+            if (settings == null) return;
+            
             // Draw detection range
-            Gizmos.color = Color.yellow;
-            Gizmos.DrawWireSphere(transform.position, enemyData.detectionRange);
-            // Draw attack range
-            Gizmos.color = Color.red;
-            if (attackComponent != null && attackComponent.attackPoint != null)
+            if (settings.ShouldDraw(GizmoCategory.DetectionRange))
             {
-                Gizmos.DrawWireSphere(attackComponent.attackPoint.position, attackComponent.attackRange);
+                Gizmos.color = settings.detectionRangeColor;
+                Gizmos.DrawWireSphere(transform.position, enemyData.detectionRange);
             }
+            
+            // Draw attack range
+            if (settings.ShouldDraw(GizmoCategory.AttackRange))
+            {
+                Gizmos.color = settings.attackRangeColor;
+                if (attackComponent != null && attackComponent.attackPoint != null)
+                {
+                    Gizmos.DrawWireSphere(attackComponent.attackPoint.position, attackComponent.attackRange);
+                }
+            }
+            #endif
         }
         
         // Helper method to find state types, checking both generic and non-generic variants

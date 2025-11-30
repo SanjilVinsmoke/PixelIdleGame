@@ -1,0 +1,434 @@
+# Unity 2D Game Development Rules - PixelIdleGame
+
+## Project Context
+This is a Unity 2D game project implementing component-based architecture with state machines, following SOLID principles and Unity best practices.
+
+---
+
+## SOLID Principles (MANDATORY)
+
+### Single Responsibility Principle (SRP)
+- Each component should have ONE clear, well-defined purpose
+- Components like `AttackComponent`, `HealthComponent`, `MoveComponent` should handle only their specific functionality
+- If a class does more than one thing, split it into multiple classes
+- Example: `AttackComponent` only handles attack logic, not health or movement
+
+### Open/Closed Principle (OCP)
+- Classes should be open for extension but closed for modification
+- Use inheritance and interfaces to extend functionality
+- Prefer composition over modification of existing code
+- Use ScriptableObjects for data that may change without modifying code
+
+### Liskov Substitution Principle (LSP)
+- Derived classes must be substitutable for their base classes
+- State classes inheriting from `BaseState<T, TEvent>` must maintain the base contract
+- Don't override methods in ways that break expected behavior
+- Ensure all implementations of an interface honor its contract
+
+### Interface Segregation Principle (ISP)
+- Keep interfaces small and focused on specific functionality
+- `IDamageable`, `IBaseAttackComponent`, `IHealthComponent` should have minimal methods
+- Don't force classes to implement methods they don't need
+- Split large interfaces into smaller, more specific ones
+
+### Dependency Inversion Principle (DIP)
+- Depend on abstractions (interfaces), not concrete implementations
+- Use interfaces like `IDamageable` instead of concrete classes
+- Components should reference interfaces, not specific implementations
+- Inject dependencies rather than creating them directly
+
+---
+
+## Unity 2D Specific Rules
+
+### Component-Based Architecture
+- Follow Unity's component pattern strictly
+- Keep MonoBehaviour components small and focused
+- Use composition to build complex behaviors from simple components
+- Components should communicate through interfaces or events
+
+### State Machine Pattern
+- Follow the established `BaseState<T, TEvent>` generic pattern
+- States should be independent and self-contained
+- Use the state machine for complex behavior management (Player, Enemy)
+- Implement proper Enter(), Exit(), Update(), and FixedUpdate() methods
+- States should not directly modify other states
+
+### ScriptableObjects Usage
+- Use ScriptableObjects for data storage: `AttackSo`, `HealthSo`, `MovementSO`, `EnemyDataSo`
+- Keep game data separate from game logic
+- ScriptableObjects should be data containers, not logic containers
+- Suffix all ScriptableObjects with `So` (e.g., `WeaponSo`, `CharacterSo`)
+
+### MonoBehaviour Lifecycle
+- Use Awake() for internal component initialization
+- Use Start() for initialization that depends on other components
+- Cache component references in Awake() or Start()
+- Use FixedUpdate() for physics-related logic
+- Use Update() for input and non-physics logic
+- Properly clean up in OnDestroy()
+
+### 2D Physics Best Practices
+- Always use LayerMask for collision detection to improve performance
+- Use `Physics2D.OverlapCircle`, `OverlapBox`, etc. with LayerMask filters
+- Cache Collider2D references when possible
+- Avoid frequent GetComponent calls in Update()
+- Use Gizmos for debug visualization (OnDrawGizmos/OnDrawGizmosSelected)
+
+---
+
+## Large File Handling (CRITICAL)
+
+### Before Modifying Files ≥500 Lines
+**STOP and:**
+1. Inform the user the file has 500+ lines
+2. Ask explicit permission before making ANY changes
+3. Show which specific sections will be modified
+4. Suggest refactoring if the file is becoming too large (800+ lines)
+
+### Large File Warning Template
+```
+⚠️ LARGE FILE WARNING
+File: [filename]
+Lines: [line_count]
+This file exceeds 500 lines. Before making changes:
+- Specific changes: [describe changes]
+- Affected lines: [line ranges]
+- Alternative: [suggest refactoring if applicable]
+
+Do you want me to proceed?
+```
+
+### Refactoring Suggestions for Large Files
+- Split components into smaller, focused components
+- Extract interfaces for shared functionality
+- Move data to ScriptableObjects
+- Create helper/utility classes for common operations
+- Use partial classes if appropriate (not recommended for Unity)
+
+---
+
+## Shader Development Rules
+
+### Before Writing/Modifying Shaders
+**ALWAYS:**
+1. Search Unity Shader Documentation first: https://docs.unity3d.com/Manual/SL-Reference.html
+2. Reference Unity ShaderLab documentation
+3. Use Unity's built-in shader functions when available
+4. Include documentation links in comments
+
+### Shader Code Requirements
+- Follow Unity ShaderLab syntax strictly
+- Include comprehensive comments explaining shader logic
+- Test shaders on target platform (2D renderer)
+- Consider performance impact (mobile if applicable)
+- Add Properties for artist-adjustable values
+- Use appropriate render queues for 2D sprites
+
+### Shader Documentation Template
+```csharp
+/*
+ * Shader: [ShaderName]
+ * Purpose: [Brief description]
+ * Unity Docs Reference: [Link to relevant Unity documentation]
+ * Properties: [List adjustable properties]
+ * Notes: [Special considerations, performance notes]
+ */
+```
+
+---
+
+## Code Organization
+
+### Namespace Structure
+Follow the established namespace pattern:
+- `Component` - for component classes
+- `Component.Interfaces` - for component interfaces
+- Match folder structure to namespace structure
+- Use namespaces to prevent naming conflicts
+
+### Folder Structure Guidelines
+```
+Assets/Scripts/
+├── Component/           # Reusable components
+│   └── Interfaces/     # Component interfaces
+├── Constant/           # Constants and static data
+│   └── Events/        # Event definitions
+├── Managers/          # Game-wide managers (singleton pattern)
+├── PlayerState/       # Player state implementations
+├── StateMachine/      # Generic state machine system
+│   ├── EnemyState/   # Enemy-specific states
+│   └── PlayerStates/ # Player-specific states
+├── ScriptableObjects/ # ScriptableObject definitions
+├── Enemy/            # Enemy implementations
+├── PowerUps/         # Power-up system
+└── UI/               # UI components and controllers
+    └── Interfaces/   # UI interfaces
+```
+
+### Naming Conventions
+- **Interfaces**: `I` prefix (e.g., `IDamageable`, `IPowerUp`)
+- **Components**: `Component` suffix (e.g., `AttackComponent`, `HealthComponent`)
+- **ScriptableObjects**: `So` suffix (e.g., `AttackSo`, `EnemyDataSo`)
+- **Managers**: `Manager` suffix (e.g., `GameManager`, `EnemyManager`)
+- **States**: `State` suffix (e.g., `PlayerIdleState`, `EnemyAttackState`)
+- **Events**: `Events` suffix (e.g., `PlayerEvents`)
+
+---
+
+## Code Quality Standards
+
+### XML Documentation (REQUIRED for Public APIs)
+```csharp
+/// <summary>
+/// Brief description of what this does
+/// </summary>
+/// <param name="paramName">Description of parameter</param>
+/// <returns>Description of return value</returns>
+public ReturnType MethodName(Type paramName)
+```
+
+### Null Safety
+- Always check for null before using references
+- Use null-conditional operators (?.) when appropriate
+- Provide fallback behavior for missing references
+- Log warnings when using fallback values
+
+Example from `AttackComponent`:
+```csharp
+if(attackPoint == null) {
+    attackPoint = transform;
+    Debug.LogWarning("Attack point not set. Defaulting to transform.");
+}
+```
+
+### Debug Visualization
+- Implement `OnDrawGizmos()` or `OnDrawGizmosSelected()` for visual debugging
+- Use Debug.Log sparingly (remove or wrap in conditional compilation)
+- Implement debug modes that can be toggled
+- Use color-coded debug information
+
+### Layer-Based Collision Detection
+- Always specify LayerMask for physics queries
+- Define layers clearly in Unity's Layer settings
+- Document which layers interact with each other
+- Use LayerMask efficiently to reduce unnecessary checks
+
+---
+
+## Performance Guidelines
+
+### Component Caching
+```csharp
+// Cache in Awake or Start
+private Rigidbody2D rb;
+private Animator animator;
+
+void Awake()
+{
+    rb = GetComponent<Rigidbody2D>();
+    animator = GetComponent<Animator>();
+}
+```
+
+### Object Pooling
+- Use object pooling for frequently instantiated objects:
+  - Projectiles
+  - Enemies
+  - VFX particles
+  - Damage numbers
+- Implement a generic pool manager
+- Reset objects properly when returning to pool
+
+### Physics Optimization
+- Use LayerMask to filter collision queries
+- Prefer OverlapCircle/OverlapBox over frequent raycasts
+- Set appropriate collision matrix in Unity settings
+- Use continuous collision detection sparingly
+
+### Update Loop Optimization
+- Cache component references
+- Avoid GetComponent in Update()
+- Use events instead of polling when possible
+- Consider using FixedUpdate for physics
+- Combine multiple Update operations when possible
+
+---
+
+## Code Review Checklist
+
+Before committing code, verify:
+- [ ] Follows SOLID principles
+- [ ] Has XML documentation for public APIs
+- [ ] Null safety checks are present
+- [ ] Component references are cached
+- [ ] Uses appropriate Unity lifecycle methods
+- [ ] Implements proper namespace structure
+- [ ] Follows naming conventions
+- [ ] No performance anti-patterns (GetComponent in Update, etc.)
+- [ ] Includes debug visualization where helpful
+- [ ] Uses LayerMask for physics queries
+- [ ] No hardcoded values (use SerializeField or ScriptableObjects)
+
+---
+
+## Common Anti-Patterns to AVOID
+
+### ❌ DON'T
+```csharp
+// GetComponent in Update
+void Update() {
+    GetComponent<Rigidbody2D>().velocity = Vector2.zero; // BAD
+}
+
+// Multiple responsibilities
+public class PlayerEverything : MonoBehaviour {
+    void Update() {
+        HandleMovement();
+        HandleAttack();
+        HandleHealth();
+        HandleUI();
+        // TOO MUCH!
+    }
+}
+
+// Hardcoded values
+float jumpForce = 5.0f; // BAD - should be [SerializeField] or in SO
+
+// Concrete dependencies
+public AttackComponent attackComponent; // BAD if interface exists
+```
+
+### ✅ DO
+```csharp
+// Cache components
+private Rigidbody2D rb;
+void Awake() {
+    rb = GetComponent<Rigidbody2D>();
+}
+void Update() {
+    rb.velocity = Vector2.zero; // GOOD
+}
+
+// Single responsibility
+public class MoveComponent : MonoBehaviour {
+    public void Move(Vector2 direction) { ... }
+}
+
+// Configurable values
+[SerializeField] private float jumpForce = 5.0f; // GOOD
+
+// Interface dependencies
+public IBaseAttackComponent attackComponent; // GOOD
+```
+
+---
+
+## Special Instructions
+
+### When Creating New Features
+1. Check if similar functionality exists
+2. Design interfaces first, then implementations
+3. Consider ScriptableObjects for data
+4. Follow the established patterns (State Machine, Component-based)
+5. Add proper XML documentation
+6. Include debug visualization
+
+### When Refactoring
+1. Identify SOLID violations
+2. Extract interfaces where appropriate
+3. Split large classes into focused components
+4. Move data to ScriptableObjects
+5. Update documentation
+6. Maintain backward compatibility when possible
+
+### When Debugging Issues
+1. Check for null references first
+2. Verify LayerMask settings
+3. Check Unity lifecycle method usage
+4. Review state machine transitions
+5. Verify component initialization order
+6. Use Gizmos to visualize problem areas
+
+---
+
+## Unity Documentation References
+
+### Essential Unity 2D Docs
+- Physics 2D: https://docs.unity3d.com/Manual/Physics2DReference.html
+- Sprite Renderer: https://docs.unity3d.com/Manual/class-SpriteRenderer.html
+- Animation: https://docs.unity3d.com/Manual/AnimationOverview.html
+- Input System: https://docs.unity3d.com/Packages/com.unity.inputsystem@latest
+- ScriptableObjects: https://docs.unity3d.com/Manual/class-ScriptableObject.html
+
+### Shader Development
+- ShaderLab Reference: https://docs.unity3d.com/Manual/SL-Reference.html
+- 2D Shader Graph: https://docs.unity3d.com/Manual/shader-graph-2d.html
+- Built-in Shader Functions: https://docs.unity3d.com/Manual/SL-BuiltinFunctions.html
+
+---
+
+## Error Handling
+
+### Unity-Specific Error Handling
+```csharp
+// Component safety
+if (!TryGetComponent<Rigidbody2D>(out var rb))
+{
+    Debug.LogError($"Missing Rigidbody2D on {gameObject.name}");
+    return;
+}
+
+// Null safety with logging
+if (target == null)
+{
+    Debug.LogWarning($"Target is null in {GetType().Name}");
+    return;
+}
+```
+
+### Assert Usage
+```csharp
+using UnityEngine.Assertions;
+
+void Awake()
+{
+    Assert.IsNotNull(attackPoint, "Attack point must be assigned!");
+    Assert.IsTrue(attackRange > 0, "Attack range must be positive!");
+}
+```
+
+---
+
+## Version Control Guidelines
+
+### Commit Messages
+Follow conventional commits:
+- `feat:` New features
+- `fix:` Bug fixes
+- `refactor:` Code refactoring
+- `docs:` Documentation changes
+- `perf:` Performance improvements
+- `test:` Test additions/modifications
+
+### What NOT to Commit
+- `Library/` folder (Unity cache)
+- `Temp/` folder (temporary files)
+- `*.csproj` files (user-specific)
+- User settings in `UserSettings/`
+- `.vs/` or `.vscode/` IDE folders
+
+---
+
+## Summary
+
+This project follows:
+1. **SOLID principles** for maintainable code
+2. **Component-based architecture** for flexibility
+3. **State machine pattern** for complex behaviors
+4. **ScriptableObjects** for data management
+5. **Interface-driven design** for decoupling
+6. **Performance-conscious** Unity patterns
+
+Always prioritize code quality, maintainability, and Unity best practices over quick solutions.
+

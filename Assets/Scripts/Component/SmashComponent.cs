@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using UnityEngine.Events;
+using ScriptableObjects;
 
 namespace Component
 {
@@ -160,7 +161,6 @@ namespace Component
 
         private void PerformDownSmashImpact()
         {
-            Debug.DrawRay(transform.position, Vector2.down * downSmashRadius, Color.red);
             if (!isSmashingDown) return;
 
             SpawnImpactEffect(transform.position);
@@ -213,13 +213,18 @@ namespace Component
 
         private void OnDrawGizmosSelected()
         {
-            Gizmos.color = Color.red;
+            #if UNITY_EDITOR
+            var settings = GizmoSettingsSo.Instance;
+            if (settings == null || !settings.ShouldDraw(GizmoCategory.SmashGizmos)) return;
+            
+            Gizmos.color = settings.smashDashColor;
             Vector2 hitboxCenter = (Vector2)transform.position + Vector2.right *
                 (coll?.bounds.extents.x ?? 0.5f + dashSmashHitboxSize.x / 2);
             Gizmos.DrawWireCube(hitboxCenter, dashSmashHitboxSize);
 
-            Gizmos.color = Color.blue;
+            Gizmos.color = settings.smashDownColor;
             Gizmos.DrawWireSphere(transform.position, downSmashRadius);
+            #endif
         }
         #endregion
     }
